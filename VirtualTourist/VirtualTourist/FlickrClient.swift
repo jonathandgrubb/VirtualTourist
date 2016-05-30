@@ -96,19 +96,6 @@ class FlickrClient : NSObject {
         return components.URL!
     }
 
-    // Jarrod Parkes - create a box of tolerance around our coordinates
-    private static func bboxString(latitude: String, longitude: String) -> String {
-        if let lat = Double(latitude), lon = Double(longitude) {
-            let minLatitude = max(lat - Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.0)
-            let maxLatitude = min(lat + Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.1)
-            let minLongitude = max(lon - Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.0)
-            let maxLongitude = min(lon + Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.1)
-            return "\(minLongitude),\(minLatitude),\(maxLongitude),\(maxLatitude)"
-        } else {
-            return "0,0,0,0"
-        }
-    }
-    
     // MARK: Shared Instance
     class func sharedInstance() -> FlickrClient {
         struct Singleton {
