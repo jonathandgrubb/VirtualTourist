@@ -8,12 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		AB823DE61CFCCB0C0009ED6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823DE51CFCCB0C0009ED6E /* AppDelegate.swift */; };
-		AB823DE81CFCCB0C0009ED6E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823DE71CFCCB0C0009ED6E /* ViewController.swift */; };
+		AB823DE81CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823DE71CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift */; };
 		AB823DEB1CFCCB0C0009ED6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB823DE91CFCCB0C0009ED6E /* Main.storyboard */; };
 		AB823DED1CFCCB0C0009ED6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB823DEC1CFCCB0C0009ED6E /* Assets.xcassets */; };
 		AB823DF01CFCCB0C0009ED6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB823DEE1CFCCB0C0009ED6E /* LaunchScreen.storyboard */; };
 		AB823DFB1CFCCB0D0009ED6E /* VirtualTouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823DFA1CFCCB0D0009ED6E /* VirtualTouristTests.swift */; };
 		AB823E061CFCCB0D0009ED6E /* VirtualTouristUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823E051CFCCB0D0009ED6E /* VirtualTouristUITests.swift */; };
+		AB823E161CFCD6470009ED6E /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823E151CFCD6470009ED6E /* PhotoAlbumViewController.swift */; };
+		AB823E191CFCD7380009ED6E /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AB823E171CFCD7380009ED6E /* Model.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +38,7 @@
 /* Begin PBXFileReference section */
 		AB823DE21CFCCB0C0009ED6E /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB823DE51CFCCB0C0009ED6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AB823DE71CFCCB0C0009ED6E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		AB823DE71CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelLocationsMapViewController.swift; sourceTree = "<group>"; };
 		AB823DEA1CFCCB0C0009ED6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AB823DEC1CFCCB0C0009ED6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AB823DEF1CFCCB0C0009ED6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +49,8 @@
 		AB823E011CFCCB0D0009ED6E /* VirtualTouristUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VirtualTouristUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB823E051CFCCB0D0009ED6E /* VirtualTouristUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualTouristUITests.swift; sourceTree = "<group>"; };
 		AB823E071CFCCB0D0009ED6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AB823E151CFCD6470009ED6E /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
+		AB823E181CFCD7380009ED6E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,8 +101,9 @@
 		AB823DE41CFCCB0C0009ED6E /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
+				AB823E141CFCD5E10009ED6E /* Models */,
+				AB823E131CFCD5D60009ED6E /* Controllers */,
 				AB823DE51CFCCB0C0009ED6E /* AppDelegate.swift */,
-				AB823DE71CFCCB0C0009ED6E /* ViewController.swift */,
 				AB823DE91CFCCB0C0009ED6E /* Main.storyboard */,
 				AB823DEC1CFCCB0C0009ED6E /* Assets.xcassets */,
 				AB823DEE1CFCCB0C0009ED6E /* LaunchScreen.storyboard */,
@@ -123,6 +128,23 @@
 				AB823E071CFCCB0D0009ED6E /* Info.plist */,
 			);
 			path = VirtualTouristUITests;
+			sourceTree = "<group>";
+		};
+		AB823E131CFCD5D60009ED6E /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				AB823DE71CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift */,
+				AB823E151CFCD6470009ED6E /* PhotoAlbumViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		AB823E141CFCD5E10009ED6E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AB823E171CFCD7380009ED6E /* Model.xcdatamodeld */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,8 +281,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB823DE81CFCCB0C0009ED6E /* ViewController.swift in Sources */,
+				AB823DE81CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift in Sources */,
 				AB823DE61CFCCB0C0009ED6E /* AppDelegate.swift in Sources */,
+				AB823E161CFCD6470009ED6E /* PhotoAlbumViewController.swift in Sources */,
+				AB823E191CFCD7380009ED6E /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -503,6 +527,19 @@
 			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		AB823E171CFCD7380009ED6E /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				AB823E181CFCD7380009ED6E /* Model.xcdatamodel */,
+			);
+			currentVersion = AB823E181CFCD7380009ED6E /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = AB823DDA1CFCCB0C0009ED6E /* Project object */;
 }
