@@ -117,8 +117,8 @@
 		AB823DE41CFCCB0C0009ED6E /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
-				AB823E141CFCD5E10009ED6E /* Models */,
 				AB823E131CFCD5D60009ED6E /* Controllers */,
+				AB823E141CFCD5E10009ED6E /* Models */,
 				AB823DE51CFCCB0C0009ED6E /* AppDelegate.swift */,
 				AB823DE91CFCCB0C0009ED6E /* Main.storyboard */,
 				AB823DEC1CFCCB0C0009ED6E /* Assets.xcassets */,
@@ -557,6 +557,7 @@
 				AB823E0C1CFCCB0D0009ED6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AB823E0D1CFCCB0D0009ED6E /* Build configuration list for PBXNativeTarget "VirtualTouristTests" */ = {
 			isa = XCConfigurationList;
@@ -565,6 +566,7 @@
 				AB823E0F1CFCCB0D0009ED6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AB823E101CFCCB0D0009ED6E /* Build configuration list for PBXNativeTarget "VirtualTouristUITests" */ = {
 			isa = XCConfigurationList;
@@ -573,6 +575,7 @@
 				AB823E121CFCCB0D0009ED6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
