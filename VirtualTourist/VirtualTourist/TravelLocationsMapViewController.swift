@@ -103,7 +103,7 @@ extension TravelLocationsMapViewController {
 // MARK:  - MKMapView delegate functions
 extension TravelLocationsMapViewController: MKMapViewDelegate {
     
-    // don't think we need this b/c we want to display a standard annotation view
+    // rules for rendering the annotions on the map
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
@@ -123,8 +123,19 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        // prepare to open the pictures associated with the place just clicked
-        print("annotation was selected")
+        
+        if let annotation = view.annotation {
+            
+            let lat = annotation.coordinate.latitude
+            let lon = annotation.coordinate.longitude
+            
+            print("annotation (\(lat),\(lon)) was selected")
+
+            // prepare to open the pictures associated with the place just clicked
+        
+        } else {
+            print("error clicking annotation")
+        }
     }
     
     func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
