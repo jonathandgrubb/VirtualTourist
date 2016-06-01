@@ -139,7 +139,26 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
-        print("annotation was added")
+        print("annotation object added")
+        
+        // Create a new pin... and Core Data takes care of the rest!
+        for view in views {
+            
+            if let annotation = view.annotation {
+                
+                let lat = annotation.coordinate.latitude
+                let lon = annotation.coordinate.longitude
+                
+                // Create a new pin... and Core Data takes care of the rest!
+                let pin = Pin(latitude: lat, longitude: lon, context: fetchedResultsController!.managedObjectContext)
+                
+                print("annotation \(pin) object added")
+                
+            } else {
+                print("error clicking annotation")
+            }
+
+        }
     }
 }
 
