@@ -103,9 +103,7 @@ extension TravelLocationsMapViewController {
 // MARK:  - MKMapView delegate functions
 extension TravelLocationsMapViewController: MKMapViewDelegate {
     
-    // Here we create a view with a "right callout accessory view". You might choose to look into other
-    // decoration alternatives. Notice the similarity between this method and the cellForRowAtIndexPath
-    // method in TableViewDataSource.
+    // don't think we need this b/c we want to display a standard annotation view
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
@@ -124,26 +122,13 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
         return pinView
     }
     
-    // This delegate method is implemented to respond to taps. It opens the system browser
-    // to the URL specified in the annotationViews subtitle property.
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        print("tap")
-        /*
-        if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.sharedApplication()
-            if let url = view.annotation?.subtitle!,
-                let validUrl = NSURL(string: url)
-                where app.canOpenURL(validUrl) == true {
-                app.openURL(validUrl)
-            } else {
-                ControllerCommon.displayErrorDialog(self, message: "Invalid Link")
-            }
-        }
-        */
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        // prepare to open the pictures associated with the place just clicked
+        print("annotation was selected")
     }
     
     func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
-        print("an annotation was added")
+        print("annotation was added")
     }
 }
 
