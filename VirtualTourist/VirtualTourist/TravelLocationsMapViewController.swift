@@ -55,13 +55,16 @@ class TravelLocationsMapViewController: UIViewController {
         
         // Create a fetchrequest
         let fr = NSFetchRequest(entityName: "Pin")
-        fr.sortDescriptors = []
+        fr.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true),
+                              NSSortDescriptor(key: "longitude", ascending: false)]
         
         // Create the FetchedResultsController
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fr,
                                             managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
         
         // see if we have any pins saved in CORE Data and load them onto the map as annotations
+        print("Number of sections: \(fetchedResultsController!.sections?.count)")
+        
         if let fc = fetchedResultsController,
            let objs = fc.fetchedObjects {
             
