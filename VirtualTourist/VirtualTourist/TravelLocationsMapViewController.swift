@@ -22,7 +22,7 @@ class TravelLocationsMapViewController: UIViewController {
             // reload the table
             fetchedResultsController?.delegate = self
             executeSearch()
-            //tableView.reloadData()
+            reloadMapData()
         }
     }
     
@@ -61,14 +61,15 @@ class TravelLocationsMapViewController: UIViewController {
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fr,
                                             managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
         
-        executeSearch()
-        
         // see if we have any pins saved in CORE Data and load them onto the map as annotations
-        print("Number of sections: \(fetchedResultsController!.sections!.count)")
         print("Number of fetchedObjects: \(fetchedResultsController!.fetchedObjects!.count)")
+    }
+    
+    // reload map with results from fetchedResultsController
+    func reloadMapData() {
         
         if let fc = fetchedResultsController,
-           let objs = fc.fetchedObjects {
+            let objs = fc.fetchedObjects {
             
             // make an array of annotations
             var annotations = [MKPointAnnotation]()
@@ -77,9 +78,9 @@ class TravelLocationsMapViewController: UIViewController {
                 
                 // downcast the object to a Pin
                 if let pin = obj as? Pin,
-                   let latitude = pin.latitude,
-                   let longitude = pin.longitude {
-                
+                    let latitude = pin.latitude,
+                    let longitude = pin.longitude {
+                    
                     // Notice that the float values are being used to create CLLocationDegree values.
                     // This is a version of the Double type.
                     let lat = CLLocationDegrees(latitude)
@@ -97,29 +98,23 @@ class TravelLocationsMapViewController: UIViewController {
                 }
             }
             
+            let oldAnnotations = self.mapView.annotations
             self.mapView.addAnnotations(annotations)
+            self.mapView.removeAnnotations(oldAnnotations)
         }
-        
     }
     
     // handle the adding of a new pin
     // http://stackoverflow.com/a/31304290
     func addAnnotation(gestureRecognizer:UIGestureRecognizer) {
+        
         if gestureRecognizer.state == UIGestureRecognizerState.Began {
+            
             let touchPoint = gestureRecognizer.locationInView(mapView)
             let newCoordinates = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
             let annotation = MKPointAnnotation()
             annotation.coordinate = newCoordinates
             
-            let lat = annotation.coordinate.latitude
-            let lon = annotation.coordinate.longitude
-            
-            // ...and Core Data takes care of the rest!
-            let pin = Pin(latitude: lat, longitude: lon, context: fetchedResultsController!.managedObjectContext)
-            
-            print("annotation \(pin) object added to CORE Data")
-
-            /*
             CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude)) { (placemarks, error) -> Void in
                 
                 if let error = error {
@@ -127,10 +122,15 @@ class TravelLocationsMapViewController: UIViewController {
                     return
                 }
                 
+                // add the annotation to the map
                 self.mapView.addAnnotation(annotation)
+                
+                // ...and Core Data takes care of the rest!
+                let pin = Pin(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude, context: self.fetchedResultsController!.managedObjectContext)
+                print("annotation \(pin) object added to CORE Data")
             }
-            */
         }
+
     }
 }
 
@@ -186,30 +186,12 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
         }
     }
     
-    func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
-        
-        // add new pins to CORE data
-        for view in views {
-            
-            if let annotation = view.annotation {
-                
-                //let lat = annotation.coordinate.latitude
-                //let lon = annotation.coordinate.longitude
-                
-                // ...and Core Data takes care of the rest!
-                //let pin = Pin(latitude: lat, longitude: lon, context: fetchedResultsController!.managedObjectContext)
-                
-                //print("annotation \(pin) object added")
-                print("annotation \(annotation) object added to MKMapView")
-            }
-
-        }
-    }
 }
 
 // MARK:  - Delegate
 extension TravelLocationsMapViewController: NSFetchedResultsControllerDelegate{
     
+    /* if we ever need to update UI with changes that originate from CORE Data
     func controller(controller: NSFetchedResultsController,
                     didChangeObject anObject: AnyObject,
                     atIndexPath indexPath: NSIndexPath?,
@@ -250,7 +232,7 @@ extension TravelLocationsMapViewController: NSFetchedResultsControllerDelegate{
             }
         }
     }
-    
+    */
     
 }
 
