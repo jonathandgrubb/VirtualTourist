@@ -54,8 +54,7 @@ class TravelLocationsMapViewController: UIViewController {
         
         // Create a fetchrequest
         let fr = NSFetchRequest(entityName: "Pin")
-        fr.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true),
-                              NSSortDescriptor(key: "longitude", ascending: false)]
+        fr.sortDescriptors = []
         
         // Create the FetchedResultsController
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fr,
