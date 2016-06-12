@@ -16,7 +16,7 @@ class TravelLocationsMapViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     
     // MARK:  - Properties
-    var fetchedResultsController : NSFetchedResultsController? /*{
+    var fetchedResultsController : NSFetchedResultsController? {
         didSet{
             // Whenever the frc changes, we execute the search and
             // reload the table
@@ -24,14 +24,13 @@ class TravelLocationsMapViewController: UIViewController {
             executeSearch()
             //tableView.reloadData()
         }
-    }*/
+    }
     
-    /*
+    
     init(fetchedResultsController fc : NSFetchedResultsController) {
         fetchedResultsController = fc
-        super.init()
+        super.init(nibName: nil, bundle: nil)
     }
-     */
     
     // Do not worry about this initializer. I has to be implemented
     // because of the way Swift interfaces with an Objective C
@@ -62,8 +61,11 @@ class TravelLocationsMapViewController: UIViewController {
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fr,
                                             managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
         
+        executeSearch()
+        
         // see if we have any pins saved in CORE Data and load them onto the map as annotations
-        print("Number of sections: \(fetchedResultsController!.sections?.count)")
+        print("Number of sections: \(fetchedResultsController!.sections!.count)")
+        print("Number of fetchedObjects: \(fetchedResultsController!.fetchedObjects!.count)")
         
         if let fc = fetchedResultsController,
            let objs = fc.fetchedObjects {
@@ -98,7 +100,6 @@ class TravelLocationsMapViewController: UIViewController {
             self.mapView.addAnnotations(annotations)
         }
         
-        
     }
     
     // handle the adding of a new pin
@@ -110,6 +111,15 @@ class TravelLocationsMapViewController: UIViewController {
             let annotation = MKPointAnnotation()
             annotation.coordinate = newCoordinates
             
+            let lat = annotation.coordinate.latitude
+            let lon = annotation.coordinate.longitude
+            
+            // ...and Core Data takes care of the rest!
+            let pin = Pin(latitude: lat, longitude: lon, context: fetchedResultsController!.managedObjectContext)
+            
+            print("annotation \(pin) object added to CORE Data")
+
+            /*
             CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude)) { (placemarks, error) -> Void in
                 
                 if let error = error {
@@ -119,12 +129,12 @@ class TravelLocationsMapViewController: UIViewController {
                 
                 self.mapView.addAnnotation(annotation)
             }
+            */
         }
     }
 }
 
 // MARK:  - Fetches
-/*
 extension TravelLocationsMapViewController {
     
     func executeSearch(){
@@ -137,7 +147,6 @@ extension TravelLocationsMapViewController {
         }
     }
 }
-*/
 
 // MARK:  - MKMapView delegate functions
 extension TravelLocationsMapViewController: MKMapViewDelegate {
@@ -184,20 +193,65 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
             
             if let annotation = view.annotation {
                 
-                let lat = annotation.coordinate.latitude
-                let lon = annotation.coordinate.longitude
+                //let lat = annotation.coordinate.latitude
+                //let lon = annotation.coordinate.longitude
                 
                 // ...and Core Data takes care of the rest!
-                let pin = Pin(latitude: lat, longitude: lon, context: fetchedResultsController!.managedObjectContext)
+                //let pin = Pin(latitude: lat, longitude: lon, context: fetchedResultsController!.managedObjectContext)
                 
-                print("annotation \(pin) object added")
-                
-            } else {
-                print("error clicking annotation")
+                //print("annotation \(pin) object added")
+                print("annotation \(annotation) object added to MKMapView")
             }
 
         }
     }
+}
+
+// MARK:  - Delegate
+extension TravelLocationsMapViewController: NSFetchedResultsControllerDelegate{
+    
+    func controller(controller: NSFetchedResultsController,
+                    didChangeObject anObject: AnyObject,
+                    atIndexPath indexPath: NSIndexPath?,
+                    forChangeType type: NSFetchedResultsChangeType,
+                    newIndexPath: NSIndexPath?) {
+        
+        if let pin = anObject as? Pin,
+           let latitude = pin.latitude,
+           let longitude = pin.longitude {
+    
+            // Notice that the float values are being used to create CLLocationDegree values.
+            // This is a version of the Double type.
+            let lat = CLLocationDegrees(latitude)
+            let long = CLLocationDegrees(longitude)
+            
+            // The lat and long are used to create a CLLocationCoordinates2D instance.
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            
+            // Here we create the annotation and set its coordiates
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            
+            switch(type){
+                
+                case .Insert:
+                    print("insert annotation")
+                    mapView.addAnnotation(annotation)
+                
+                case .Delete:
+                    print("delete annotation")
+                    mapView.removeAnnotation(annotation)
+                
+                case .Update:
+                    print("update annotation")
+                
+                case .Move:
+                    print("move annotation")
+            }
+        }
+    }
+    
+    
 }
 
 
