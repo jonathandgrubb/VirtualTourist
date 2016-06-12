@@ -179,12 +179,38 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
             print("annotation (\(lat),\(lon)) was selected")
 
             // prepare to open the pictures associated with the place just clicked
+            performSegueWithIdentifier("PhotosViewSegue", sender: nil)
         
         } else {
             print("error clicking annotation")
         }
     }
     
+}
+
+extension TravelLocationsMapViewController {
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier! == "PhotosViewSegue" {
+            
+            if let photosVC = segue.destinationViewController as? PhotoAlbumViewController,
+               let annotation = mapView.selectedAnnotations.first {
+                
+                let fr = NSFetchRequest(entityName: "Photo")
+                fr.sortDescriptors = []
+                
+                let pred = NSPredicate(format: "latitude = %@ AND longitude = %@", annotation.coordinate.latitude, annotation.coordinate.longitude)
+                
+                fr.predicate = pred
+                
+                let fc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: fetchedResultsController!.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+                
+                photosVC.fetchedResultsController = fc
+            }
+            
+        }
+    }
 }
 
 // MARK:  - Delegate

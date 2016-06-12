@@ -7,8 +7,23 @@
 //
 
 import UIKit
+import CoreData
+import MapKit
 
-class PhotoAlbumViewController: UIViewController {
+class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDelegate {
+    
+    @IBOutlet weak var mapView: MKMapView!
+    
+    // MARK:  - Properties
+    var fetchedResultsController : NSFetchedResultsController? {
+        didSet{
+            // Whenever the frc changes, we execute the search and
+            // reload the table
+            fetchedResultsController?.delegate = self
+            //executeSearch()
+            //reloadMapData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

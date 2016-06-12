@@ -52,6 +52,7 @@
                     <navigationItem key="navigationItem" id="yvB-gq-sQJ"/>
                     <connections>
                         <outlet property="mapView" destination="Fgc-Jl-661" id="sFc-4X-TE8"/>
+                        <segue destination="gTN-KQ-a7R" kind="show" identifier="PhotosViewSegue" id="yQe-qs-AhH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TKM-iA-LKf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -80,7 +81,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="FdS-nb-QtG">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="0.0" y="64" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -96,10 +97,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="OjN-Wf-dew" id="0sB-se-Mp8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wVe-UY-NJS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1502" y="279"/>
+            <point key="canvasLocation" x="1502" y="258"/>
         </scene>
     </scenes>
 </document>
