@@ -14,6 +14,8 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     
     @IBOutlet weak var mapView: MKMapView!
     
+    var location: MKAnnotation?
+    
     // MARK:  - Properties
     var fetchedResultsController : NSFetchedResultsController? {
         didSet{
@@ -24,6 +26,20 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
             //reloadMapData()
         }
     }
+    
+    /*
+    init(fetchedResultsController fc : NSFetchedResultsController) {
+        fetchedResultsController = fc
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    // Do not worry about this initializer. I has to be implemented
+    // because of the way Swift interfaces with an Objective C
+    // protocol called NSArchiving. It's not relevant.
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    */
     
     override func viewDidLoad() {
         super.viewDidLoad()

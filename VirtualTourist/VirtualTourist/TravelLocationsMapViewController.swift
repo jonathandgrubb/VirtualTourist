@@ -206,6 +206,7 @@ extension TravelLocationsMapViewController {
                 
                 let fc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: fetchedResultsController!.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
                 
+                photosVC.location = annotation
                 photosVC.fetchedResultsController = fc
             }
             
