@@ -13,6 +13,7 @@ import MapKit
 class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var photosCollectionView: UICollectionView!
     
     var location: MKAnnotation?
     
@@ -22,12 +23,11 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
             // Whenever the frc changes, we execute the search and
             // reload the table
             fetchedResultsController?.delegate = self
-            //executeSearch()
+            executeSearch()
             //reloadMapData()
         }
     }
     
-    /*
     init(fetchedResultsController fc : NSFetchedResultsController) {
         fetchedResultsController = fc
         super.init(nibName: nil, bundle: nil)
@@ -39,7 +39,6 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    */
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,4 +64,18 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     }
     
     
+}
+
+// MARK:  - Fetches
+extension PhotoAlbumViewController {
+    
+    func executeSearch(){
+        if let fc = fetchedResultsController{
+            do{
+                try fc.performFetch()
+            }catch let e as NSError{
+                print("Error while trying to perform a search: \n\(e)\n\(fetchedResultsController)")
+            }
+        }
+    }
 }
