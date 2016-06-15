@@ -197,7 +197,7 @@ extension TravelLocationsMapViewController {
             if let photosVC = segue.destinationViewController as? PhotoAlbumViewController,
                let annotation = mapView.selectedAnnotations.first {
                 
-                let fr = NSFetchRequest(entityName: "Photo")
+                let fr = NSFetchRequest(entityName: "Pin")
                 fr.sortDescriptors = []
                 
                 let pred = NSPredicate(format: "latitude = %@ AND longitude = %@", annotation.coordinate.latitude, annotation.coordinate.longitude)
