@@ -10,7 +10,7 @@ import Foundation
 
 extension FlickrClient {
     
-    func getLocationPhotos(latitude: String, longitude: String, completionHandlerForLocations: (success: Bool, error: Constants.Errors?, results: [String]?) -> Void) {
+    func getLocationPhotos(latitude: Double, longitude: Double, completionHandlerForLocations: (success: Bool, error: Constants.Errors?, results: [String]?) -> Void) {
         
         // specify params (if any)
         let parameters : [String:AnyObject] = [
@@ -19,7 +19,7 @@ extension FlickrClient {
             Constants.FlickrParameterKeys.SafeSearch : "1",
             Constants.FlickrParameterKeys.Media : Constants.FlickrParameterValues.MediaPhotosOnly,
             Constants.FlickrParameterKeys.Extras : Constants.FlickrParameterValues.SmallSquareURL,
-            Constants.FlickrParameterKeys.BoundingBox : FlickrClient.bboxString(latitude, longitude: longitude)
+            Constants.FlickrParameterKeys.BoundingBox : FlickrClient.bboxString(String(latitude), longitude: String(longitude))
         ]
         
         taskForGETMethod(parameters) { (result, error) in
