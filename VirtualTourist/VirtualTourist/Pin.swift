@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 
-class Pin: NSManagedObject {
+public class Pin: NSManagedObject {
 
     convenience init(latitude: Double, longitude: Double, context: NSManagedObjectContext) {
         
