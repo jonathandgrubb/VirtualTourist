@@ -24,6 +24,7 @@
 		AB823E271CFCF52C0009ED6E /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823E231CFCF52C0009ED6E /* Pin.swift */; };
 		AB823E291CFCF52C0009ED6E /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823E251CFCF52C0009ED6E /* Photo.swift */; };
 		AB823E2B1CFCF5A60009ED6E /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823E2A1CFCF5A60009ED6E /* CoreDataStack.swift */; };
+		ABA27B4A1D10D25100A08FBB /* ControllerCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA27B491D10D25100A08FBB /* ControllerCommon.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		AB823E231CFCF52C0009ED6E /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
 		AB823E251CFCF52C0009ED6E /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		AB823E2A1CFCF5A60009ED6E /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		ABA27B491D10D25100A08FBB /* ControllerCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerCommon.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +151,7 @@
 		AB823E131CFCD5D60009ED6E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				ABA27B481D10D22F00A08FBB /* Common */,
 				AB823DE71CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift */,
 				AB823E151CFCD6470009ED6E /* PhotoAlbumViewController.swift */,
 			);
@@ -185,6 +188,14 @@
 				AB823E201CFCDBA40009ED6E /* FlickrConstants.swift */,
 			);
 			name = Flickr;
+			sourceTree = "<group>";
+		};
+		ABA27B481D10D22F00A08FBB /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				ABA27B491D10D25100A08FBB /* ControllerCommon.swift */,
+			);
+			name = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -328,6 +339,7 @@
 				AB823E271CFCF52C0009ED6E /* Pin.swift in Sources */,
 				AB823E1D1CFCDB7B0009ED6E /* FlickrClient.swift in Sources */,
 				AB823E1F1CFCDB910009ED6E /* FlickrConvenience.swift in Sources */,
+				ABA27B4A1D10D25100A08FBB /* ControllerCommon.swift in Sources */,
 				AB823DE61CFCCB0C0009ED6E /* AppDelegate.swift in Sources */,
 				AB823E291CFCF52C0009ED6E /* Photo.swift in Sources */,
 				AB823E161CFCD6470009ED6E /* PhotoAlbumViewController.swift in Sources */,

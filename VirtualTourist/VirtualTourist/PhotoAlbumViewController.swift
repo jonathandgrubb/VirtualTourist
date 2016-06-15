@@ -43,7 +43,20 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        if let loc = location {
+            // display the current location
+            let currentAnnotations = mapView.annotations
+            mapView.removeAnnotations(currentAnnotations)
+            mapView.addAnnotation(loc)
+            
+            let center = CLLocationCoordinate2D(latitude: loc.coordinate.latitude, longitude: loc.coordinate.longitude)
+            let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+            let region = MKCoordinateRegion(center: center, span: span)
+            mapView.setRegion(region, animated: false)
+        } else {
+            ControllerCommon.displayErrorDialog(self, message: "Could not display current location on map")
+        }
     }
     
     override func didReceiveMemoryWarning() {
