@@ -10,33 +10,49 @@ import Foundation
 
 extension FlickrClient {
     
-    func getLocationPhotos(latitude: String, longitude: String, completionHandlerForLocations: (success: Bool, error: Constants.Errors?) -> Void) {
+    func getLocationPhotos(latitude: String, longitude: String, completionHandlerForLocations: (success: Bool, error: Constants.Errors?, results: [String]?) -> Void) {
         
         // specify params (if any)
         let parameters : [String:AnyObject] = [
-            Constants.FlickrParameterKeys.Method : Constants.FlickrParameterValues.SearchByGeoMethod,
+            Constants.FlickrParameterKeys.Method : Constants.FlickrParameterValues.SearchMethod,
             Constants.FlickrParameterKeys.PerPage : "21",
-            Constants.FlickrParameterKeys.Latitude : latitude,
-            Constants.FlickrParameterKeys.Longitude : longitude,
+            Constants.FlickrParameterKeys.SafeSearch : "1",
+            Constants.FlickrParameterKeys.Media : Constants.FlickrParameterValues.MediaPhotosOnly,
+            Constants.FlickrParameterKeys.Extras : Constants.FlickrParameterValues.SmallSquareURL,
             Constants.FlickrParameterKeys.BoundingBox : FlickrClient.bboxString(latitude, longitude: longitude)
         ]
         
         taskForGETMethod(parameters) { (result, error) in
+            
             // 3. Send the desired value(s) to completion handler */
             if let error = error {
                 print(error)
-                completionHandlerForLocations(success: false, error: Constants.Errors.NetworkError)
+                completionHandlerForLocations(success: false, error: Constants.Errors.NetworkError, results: nil)
             } else {
                 print(result)
-                // get the students' locations
-                if let results = result["photos"] as? [[String:AnyObject]] {
-                    // TODO: put it in the database
+                
+                // get the photo urls
+                if let results = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject],
+                    let photos = results[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] {
+                    
+                    // put the urls into an array
+                    var photosArray = [String]()
+                    for pic in photos {
+                        if let url = pic[Constants.FlickrResponseKeys.SmallSquareURL] as? String {
+                            photosArray.append(url)
+                        }
+                    }
+                    
+                    // success
+                    completionHandlerForLocations(success: true, error: nil, results: photosArray)
+                    
                 } else {
+                    // couldn't find the photos in the result
                     if result["message"] != nil {
                         print("Error from Flickr in \(result)")
-                        completionHandlerForLocations(success: false, error: Constants.Errors.InputError)
+                        completionHandlerForLocations(success: false, error: Constants.Errors.InputError, results: nil)
                     } else {
-                        completionHandlerForLocations(success: false, error: Constants.Errors.NetworkError)
+                        completionHandlerForLocations(success: false, error: Constants.Errors.NetworkError, results: nil)
                     }
                 }
             }

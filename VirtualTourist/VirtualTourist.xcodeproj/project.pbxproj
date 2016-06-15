@@ -25,6 +25,7 @@
 		AB823E291CFCF52C0009ED6E /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823E251CFCF52C0009ED6E /* Photo.swift */; };
 		AB823E2B1CFCF5A60009ED6E /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823E2A1CFCF5A60009ED6E /* CoreDataStack.swift */; };
 		ABA27B4A1D10D25100A08FBB /* ControllerCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA27B491D10D25100A08FBB /* ControllerCommon.swift */; };
+		ABA27B4E1D10EAC800A08FBB /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA27B4D1D10EAC800A08FBB /* PhotoManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		AB823E251CFCF52C0009ED6E /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		AB823E2A1CFCF5A60009ED6E /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		ABA27B491D10D25100A08FBB /* ControllerCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerCommon.swift; sourceTree = "<group>"; };
+		ABA27B4D1D10EAC800A08FBB /* PhotoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +121,7 @@
 		AB823DE41CFCCB0C0009ED6E /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
+				ABA27B4B1D10EA7D00A08FBB /* Classes */,
 				AB823E131CFCD5D60009ED6E /* Controllers */,
 				AB823E141CFCD5E10009ED6E /* Models */,
 				AB823DE51CFCCB0C0009ED6E /* AppDelegate.swift */,
@@ -196,6 +199,14 @@
 				ABA27B491D10D25100A08FBB /* ControllerCommon.swift */,
 			);
 			name = Common;
+			sourceTree = "<group>";
+		};
+		ABA27B4B1D10EA7D00A08FBB /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				ABA27B4D1D10EAC800A08FBB /* PhotoManager.swift */,
+			);
+			name = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,6 +345,7 @@
 			files = (
 				AB823E211CFCDBA40009ED6E /* FlickrConstants.swift in Sources */,
 				AB823DE81CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift in Sources */,
+				ABA27B4E1D10EAC800A08FBB /* PhotoManager.swift in Sources */,
 				AB116AFC1D0DDB4A00882A88 /* Photo+CoreDataProperties.swift in Sources */,
 				AB823E2B1CFCF5A60009ED6E /* CoreDataStack.swift in Sources */,
 				AB823E271CFCF52C0009ED6E /* Pin.swift in Sources */,

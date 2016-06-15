@@ -46,6 +46,7 @@ struct Constants {
         static let Page = "page"
         static let Latitude = "lat"
         static let Longitude = "lon"
+        static let Media = "media"
     }
     
     // MARK: Flickr Parameter Values
@@ -58,7 +59,9 @@ struct Constants {
         static let GalleryPhotosMethod = "flickr.galleries.getPhotos"
         static let GalleryID = "5704-72157622566655097"
         static let MediumURL = "url_m"
+        static let SmallSquareURL = "url_sq"
         static let UseSafeSearch = "1"
+        static let MediaPhotosOnly = "photos"
     }
     
     // MARK: Flickr Response Keys
@@ -68,6 +71,7 @@ struct Constants {
         static let Photo = "photo"
         static let Title = "title"
         static let MediumURL = "url_m"
+        static let SmallSquareURL = "url_sq"
         static let Pages = "pages"
         static let Total = "total"
     }
