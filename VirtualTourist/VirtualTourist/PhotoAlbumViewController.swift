@@ -124,9 +124,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                     
                     // create photos for the pin in CORE Data
                     if let images = images {
-                        for image in images {
-                            let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
-                            photo.pin = self.selectedPin
+                        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0)) {
+                            for image in images {
+                                let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
+                                photo.pin = self.selectedPin
+                            }
                         }
                         cellCount = images.count
                     } else {
