@@ -105,9 +105,16 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                     }
                     
                     // create photos for the pin in CORE Data
-                    for image in images! {
-                        let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
-                        photo.pin = self.selectedPin
+                    if let images = images {
+                        for image in images {
+                            let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
+                            photo.pin = self.selectedPin
+                        }
+                        cellCount = images.count
+                    } else {
+                        performUIUpdatesOnMain {
+                            ControllerCommon.displayErrorDialog(self, message: "Error getting photos")
+                        }
                     }
                 }
             } else {
