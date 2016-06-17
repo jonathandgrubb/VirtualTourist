@@ -81,6 +81,24 @@ extension PhotoAlbumViewController {
     }
 }
 
+// MARK: - Delegates
+extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout {
+
+    // keep the collection view in three columns
+    // http://stackoverflow.com/a/35826884
+    func collectionView(collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        let numberOfItemsPerRow = 3
+        let flowLayout = collectionViewLayout as! UICollectionViewFlowLayout
+        let totalSpace = flowLayout.sectionInset.left
+            + flowLayout.sectionInset.right
+            + (flowLayout.minimumInteritemSpacing * CGFloat(numberOfItemsPerRow - 1))
+        let size = Int((collectionView.bounds.width - totalSpace) / CGFloat(numberOfItemsPerRow))
+        return CGSize(width: size, height: size)
+    }
+}
+
 // MARK: - Data Sources
 extension PhotoAlbumViewController: UICollectionViewDataSource {
     
