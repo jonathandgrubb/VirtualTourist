@@ -21,7 +21,6 @@ class FlickrClient : NSObject {
         params[Constants.FlickrParameterKeys.APIKey] = Constants.FlickrParameterValues.APIKey
         params[Constants.FlickrParameterKeys.Format] = Constants.FlickrParameterValues.ResponseFormat
         params[Constants.FlickrParameterKeys.SafeSearch] = Constants.FlickrParameterValues.UseSafeSearch
-        params[Constants.FlickrParameterKeys.Extras] = Constants.FlickrParameterValues.MediumURL
         params[Constants.FlickrParameterKeys.NoJSONCallback] = Constants.FlickrParameterValues.DisableJSONCallback
         
         // 2/3. Build the URL, Configure the request
@@ -73,6 +72,7 @@ class FlickrClient : NSObject {
         } catch {
             let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)'"]
             completionHandlerForConvertData(result: nil, error: NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
+            return
         }
         
         completionHandlerForConvertData(result: parsedResult, error: nil)

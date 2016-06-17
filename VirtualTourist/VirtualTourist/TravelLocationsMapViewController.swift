@@ -15,6 +15,8 @@ class TravelLocationsMapViewController: UIViewController {
     // MARK: - Outlets
     @IBOutlet weak var mapView: MKMapView!
     
+    var selectedPin: Pin?
+    
     // MARK:  - Properties
     var fetchedResultsController : NSFetchedResultsController? {
         didSet{
@@ -178,8 +180,17 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
             
             print("annotation (\(lat),\(lon)) was selected")
 
-            // prepare to open the pictures associated with the place just clicked
-            performSegueWithIdentifier("PhotosViewSegue", sender: nil)
+            // create fetch request for the selected pin
+            let fr = NSFetchRequest(entityName: "Pin")
+            fr.sortDescriptors = []
+            let pred = NSPredicate(format: "latitude = %@ AND longitude = %@", annotation.coordinate.latitude, annotation.coordinate.longitude)
+            fr.predicate = pred
+            executeSearch()
+            if let pin = fetchedResultsController!.fetchedObjects?.first as? Pin {
+                selectedPin = pin
+                // prepare to open the pictures associated with the place just clicked
+                performSegueWithIdentifier("PhotosViewSegue", sender: nil)
+            }
         
         } else {
             print("error clicking annotation")
@@ -195,17 +206,18 @@ extension TravelLocationsMapViewController {
         if segue.identifier! == "PhotosViewSegue" {
             
             if let photosVC = segue.destinationViewController as? PhotoAlbumViewController,
-               let annotation = mapView.selectedAnnotations.first {
+               let annotation = mapView.selectedAnnotations.first,
+               let pin = selectedPin {
                 
-                let fr = NSFetchRequest(entityName: "Pin")
+                // create fetch request for the selected photos for the pin
+                let fr = NSFetchRequest(entityName: "Photo")
                 fr.sortDescriptors = []
-                
-                let pred = NSPredicate(format: "latitude = %@ AND longitude = %@", annotation.coordinate.latitude, annotation.coordinate.longitude)
-                
+                let pred = NSPredicate(format: "pin = %@", pin)
                 fr.predicate = pred
                 
                 let fc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: fetchedResultsController!.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
                 
+                photosVC.selectedPin = pin
                 photosVC.location = annotation
                 photosVC.fetchedResultsController = fc
             }

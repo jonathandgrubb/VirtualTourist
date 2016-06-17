@@ -16,6 +16,7 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     @IBOutlet weak var photosCollectionView: UICollectionView!
     
     var location: MKAnnotation?
+    var selectedPin: Pin?
     
     // MARK:  - Properties
     var fetchedResultsController : NSFetchedResultsController? {
@@ -93,6 +94,25 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
         
         if cellCount == 0 {
             // initiate an album download from Flickr since there are no photos
+            if let loc = location {
+                FlickrClient.sharedInstance().refreshAlbum(loc.coordinate.latitude, longitude: loc.coordinate.longitude) { (success, error, images) in
+                    
+                    if success == false {
+                        performUIUpdatesOnMain {
+                            ControllerCommon.displayErrorDialog(self, message: "Error getting photos")
+                        }
+                        return
+                    }
+                    
+                    // create photos for the pin in CORE Data
+                    for image in images! {
+                        let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
+                        photo.pin = self.selectedPin
+                    }
+                }
+            } else {
+                ControllerCommon.displayErrorDialog(self, message: "Error: no location data to retrieve photos")
+            }
         }
         
         return cellCount

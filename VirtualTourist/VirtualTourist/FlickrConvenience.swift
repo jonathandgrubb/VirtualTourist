@@ -16,7 +16,6 @@ extension FlickrClient {
         let parameters : [String:AnyObject] = [
             Constants.FlickrParameterKeys.Method : Constants.FlickrParameterValues.SearchMethod,
             Constants.FlickrParameterKeys.PerPage : "21",
-            Constants.FlickrParameterKeys.SafeSearch : "1",
             Constants.FlickrParameterKeys.Media : Constants.FlickrParameterValues.MediaPhotosOnly,
             Constants.FlickrParameterKeys.Extras : Constants.FlickrParameterValues.SmallSquareURL,
             Constants.FlickrParameterKeys.BoundingBox : FlickrClient.bboxString(String(latitude), longitude: String(longitude))
@@ -58,6 +57,33 @@ extension FlickrClient {
             }
         }
         
+    }
+
+    func refreshAlbum(latitude: Double, longitude: Double, refreshAlbumCompletionHandler: (success: Bool, error: Constants.Errors?, images: [NSData]?) -> Void) {
+        
+        FlickrClient.sharedInstance().getLocationPhotos(latitude, longitude: longitude) { (success, error, results) in
+            if success == false {
+                // didn't get the photos
+                refreshAlbumCompletionHandler(success: false, error: error!, images: nil)
+                return
+            }
+            
+            if let urls = results {
+                // turn the urls into images
+                var images = [NSData]()
+                for url in urls {
+                    let imageURL = NSURL(string: url)
+                    if let imageData = NSData(contentsOfURL: imageURL!) {
+                        images.append(imageData)
+                    }
+                }
+                refreshAlbumCompletionHandler(success: true, error: nil, images: images)
+                
+            } else {
+                // no photos were returned
+                refreshAlbumCompletionHandler(success: false, error: Constants.Errors.NetworkError, images: nil)
+            }
+        }
     }
 
     // Jarrod Parkes - create a box of tolerance around our coordinates

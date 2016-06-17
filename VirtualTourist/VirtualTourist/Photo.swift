@@ -12,6 +12,17 @@ import CoreData
 
 public class Photo: NSManagedObject {
 
-// Insert code here to add functionality to your managed object subclass
-
+    convenience init(data: NSData, context: NSManagedObjectContext) {
+        
+        // An EntityDescription is an object that has access to all
+        // the information you provided in the Entity part of the model
+        // you need it to create an instance of this class.
+        if let ent = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context){
+            self.init(entity: ent, insertIntoManagedObjectContext: context)
+            self.data = data
+        } else {
+            fatalError("Unable to find Entity name!")
+        }
+        
+    }
 }
