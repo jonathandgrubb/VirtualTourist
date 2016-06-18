@@ -28,7 +28,6 @@ extension FlickrClient {
                 print(error)
                 completionHandlerForLocations(success: false, error: Constants.Errors.NetworkError, results: nil)
             } else {
-                print(result)
                 
                 // get the photo urls
                 if let results = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject],

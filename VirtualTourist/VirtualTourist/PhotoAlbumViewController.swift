@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import MapKit
 
-class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDelegate {
+class PhotoAlbumViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var photosCollectionView: UICollectionView!
@@ -97,22 +97,36 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout {
         let size = Int((collectionView.bounds.width - totalSpace) / CGFloat(numberOfItemsPerRow))
         return CGSize(width: size, height: size)
     }
+    
+    // if we ever need to update UI with changes that originate from CORE Data
+    func controller(controller: NSFetchedResultsController,
+                    didChangeObject anObject: AnyObject,
+                    atIndexPath indexPath: NSIndexPath?,
+                    forChangeType type: NSFetchedResultsChangeType,
+                    newIndexPath: NSIndexPath?) {
+        
+        print("something changed")
+    }
 }
 
 // MARK: - Data Sources
-extension PhotoAlbumViewController: UICollectionViewDataSource {
+extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResultsControllerDelegate {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         var cellCount = 0
         // how many cells?
         if let objs = fetchedResultsController?.fetchedObjects {
+            print("original cell count by fetch: \(objs.count)")
             cellCount = objs.count
         }
         
         if cellCount == 0 {
+            
+            print("no content")
             // initiate an album download from Flickr since there are no photos
             if let loc = location {
+                print("initiate Flickr request")
                 FlickrClient.sharedInstance().refreshAlbum(loc.coordinate.latitude, longitude: loc.coordinate.longitude) { (success, error, images) in
                     
                     if success == false {
@@ -125,12 +139,18 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                     // create photos for the pin in CORE Data
                     if let images = images {
                         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0)) {
+                            print("loading images into CORE Data")
                             for image in images {
                                 let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
                                 photo.pin = self.selectedPin
                             }
+                            performUIUpdatesOnMain {
+                                print("fetching new results from model")
+                                self.executeSearch()
+                                collectionView.reloadData()
+                            }
                         }
-                        cellCount = images.count
+                        print("new cell count provided by Flickr request for photos: \(images.count)")
                     } else {
                         performUIUpdatesOnMain {
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photos")
@@ -142,9 +162,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
             }
         }
         
+        print("returned row count: \(cellCount)")
         return cellCount
     }
     
+    /* before we broke the cell out into its own class
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         // get the cell
@@ -155,7 +177,18 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
             activityIndicator.stopAnimating()
         }
         
+        let label = UILabel(frame: cell.bounds)
+        label.text = "Loading..."
+        cell.contentView.addSubview(label)
+        
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
+        activityIndicator.hidesWhenStopped = true;
+        activityIndicator.center = cell.center;
+        activityIndicator.startAnimating()
+        cell.contentView.addSubview(activityIndicator)
+        
         // get the Photo (if available)
+        
         if let photo = fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo,
            let data = photo.data {
             
@@ -165,18 +198,54 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
             cell.backgroundView = imageView
         
         } else {
-        
+
             // programmatically adding UIActivityView and start its animation
             // http://sourcefreeze.com/uiactivityindicatorview-example-using-swift-in-ios/
             // http://stackoverflow.com/questions/7212859/how-to-set-an-uiactivityindicatorview-when-loading-a-uitableviewcell
-            let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+            let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
             activityIndicator.hidesWhenStopped = true;
-            activityIndicator.center = view.center;
+            activityIndicator.center = cell.center;
             activityIndicator.startAnimating()
             cell.backgroundView = activityIndicator
+            //cell.contentView.addSubview(activityIndicator)
+        }
+        
+        // return the cell
+        return cell
+    }
+    */
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
+        // get the cell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Photo", forIndexPath: indexPath) as! PhotoViewCell
+        
+        // stop the circle of patience (if it was going)
+        cell.activityIndicator.stopAnimating()
+        
+        // get the Photo (if available)
+        if let photo = fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo,
+            let data = photo.data {
+            
+            // put it into the cell if we have it
+            let image = UIImage(data: data)
+            let imageView = UIImageView(image: image)
+            cell.backgroundView = imageView
+            
+        } else {
+            
+            // haven't loaded the picture yet
+            cell.activityIndicator.startAnimating()
         }
         
         // return the cell
         return cell
     }
 }
+
+
+
+
+
+
+

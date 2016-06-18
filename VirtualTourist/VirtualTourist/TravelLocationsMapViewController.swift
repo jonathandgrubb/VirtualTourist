@@ -198,7 +198,7 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
                 }
                 if let pin = filteredPins.first {
                     selectedPin = pin
-                    print("pin was fetched: \(pin.latitude),\(pin.longitude)")
+                    print("pin was fetched: \(pin.latitude!),\(pin.longitude!)")
                     // prepare to open the pictures associated with the place just clicked
                     performSegueWithIdentifier("PhotosViewSegue", sender: nil)
                 }

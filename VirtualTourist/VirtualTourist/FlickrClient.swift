@@ -92,7 +92,6 @@ class FlickrClient : NSObject {
             components.queryItems!.append(queryItem)
         }
         
-        print(components.URL!)
         return components.URL!
     }
 
