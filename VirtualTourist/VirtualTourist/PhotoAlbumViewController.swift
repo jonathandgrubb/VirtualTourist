@@ -138,17 +138,15 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
                     
                     // create photos for the pin in CORE Data
                     if let images = images {
-                        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND,0)) {
-                            print("loading images into CORE Data")
-                            for image in images {
-                                let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
-                                photo.pin = self.selectedPin
-                            }
-                            performUIUpdatesOnMain {
-                                print("fetching new results from model")
-                                self.executeSearch()
-                                collectionView.reloadData()
-                            }
+                        print("loading images into CORE Data")
+                        for image in images {
+                            let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
+                            photo.pin = self.selectedPin
+                        }
+                        performUIUpdatesOnMain {
+                            print("fetching new results from model")
+                            self.executeSearch()
+                            collectionView.reloadData()
                         }
                         print("new cell count provided by Flickr request for photos: \(images.count)")
                     } else {
