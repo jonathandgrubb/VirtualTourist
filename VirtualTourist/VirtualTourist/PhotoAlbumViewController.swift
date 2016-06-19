@@ -14,6 +14,7 @@ class PhotoAlbumViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var photosCollectionView: UICollectionView!
+    @IBOutlet weak var newCollectionButton: UIButton!
     
     var location: MKAnnotation?
     var selectedPin: Pin?
@@ -64,6 +65,30 @@ class PhotoAlbumViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @IBAction func newCollectionSelected(sender: AnyObject) {
+        if let pin = selectedPin {
+            newCollectionButton.enabled = false
+            
+            refreshPhotos(pin) { (success, errorMessage) in
+                
+                if success == false {
+                    performUIUpdatesOnMain {
+                        self.newCollectionButton.enabled = true
+                        ControllerCommon.displayErrorDialog(self, message: "Error refreshing photo urls")
+                    }
+                    return
+                }
+                
+                print("fetching new results from model")
+                performUIUpdatesOnMain {
+                    self.executeSearch()
+                    self.photosCollectionView.reloadData()
+                    self.newCollectionButton.enabled = true
+                }
+            }
+        }
     }
     
     func refreshPhotos(pin: Pin, completionHandler: (success: Bool, errorMessage: String?) -> Void) {
@@ -187,9 +212,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
             print("no content")
             // initiate an album download from Flickr since there are no photos
             if let pin = selectedPin {
+                newCollectionButton.enabled = false
                 refreshPhotos(pin) { (success, errorMessage) in
                     if success == false {
                         performUIUpdatesOnMain {
+                            self.newCollectionButton.enabled = true
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
                         }
                         return
@@ -199,6 +226,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                     performUIUpdatesOnMain {
                         self.executeSearch()
                         collectionView.reloadData()
+                        self.newCollectionButton.enabled = true
                     }
                 }
             }
