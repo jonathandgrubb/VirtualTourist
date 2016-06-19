@@ -207,7 +207,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
                     if let imageURL = NSURL(string: photo.url!) {
                         let imageData = NSData(contentsOfURL: imageURL)
-                        //photo.data = imageData
                         photo.setValue(imageData, forKey: "data")
                         performUIUpdatesOnMain {
                             collectionView.reloadData()
