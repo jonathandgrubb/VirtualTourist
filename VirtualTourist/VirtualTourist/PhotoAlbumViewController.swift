@@ -127,20 +127,20 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
             // initiate an album download from Flickr since there are no photos
             if let loc = location {
                 print("initiate Flickr request")
-                FlickrClient.sharedInstance().refreshAlbum(loc.coordinate.latitude, longitude: loc.coordinate.longitude) { (success, error, images) in
+                FlickrClient.sharedInstance().getLocationPhotos(loc.coordinate.latitude, longitude: loc.coordinate.longitude) { (success, error, results) in
                     
                     if success == false {
                         performUIUpdatesOnMain {
-                            ControllerCommon.displayErrorDialog(self, message: "Error getting photos")
+                            ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
                         }
                         return
                     }
                     
                     // create photos for the pin in CORE Data
-                    if let images = images {
-                        print("loading images into CORE Data")
-                        for image in images {
-                            let photo = Photo(data: image, context: self.fetchedResultsController!.managedObjectContext)
+                    if let urls = results {
+                        print("creating new Photos in CORE Data")
+                        for url in urls {
+                            let photo = Photo(url: url, context: self.fetchedResultsController!.managedObjectContext)
                             photo.pin = self.selectedPin
                         }
                         performUIUpdatesOnMain {
@@ -148,7 +148,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
                             self.executeSearch()
                             collectionView.reloadData()
                         }
-                        print("new cell count provided by Flickr request for photos: \(images.count)")
+                        print("new cell count provided by Flickr request for photos: \(urls.count)")
                     } else {
                         performUIUpdatesOnMain {
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photos")
