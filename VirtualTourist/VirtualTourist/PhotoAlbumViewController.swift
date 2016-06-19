@@ -18,6 +18,7 @@ class PhotoAlbumViewController: UIViewController {
     
     var location: MKAnnotation?
     var selectedPin: Pin?
+    var selectedPhotos = [NSIndexPath]()
     
     // MARK:  - Properties
     var fetchedResultsController : NSFetchedResultsController? {
@@ -68,27 +69,33 @@ class PhotoAlbumViewController: UIViewController {
     }
     
     @IBAction func newCollectionSelected(sender: AnyObject) {
-        if let pin = selectedPin {
-            newCollectionButton.enabled = false
-            
-            refreshPhotos(pin) { (success, errorMessage) in
+        if newCollectionButton.titleLabel == "New Collection" {
+            // let's refresh the photos
+            if let pin = selectedPin {
+                newCollectionButton.enabled = false
                 
-                if success == false {
-                    performUIUpdatesOnMain {
-                        self.newCollectionButton.enabled = true
-                        ControllerCommon.displayErrorDialog(self, message: "Error refreshing photo urls")
+                refreshPhotos(pin) { (success, errorMessage) in
+                    
+                    if success == false {
+                        performUIUpdatesOnMain {
+                            self.newCollectionButton.enabled = true
+                            ControllerCommon.displayErrorDialog(self, message: "Error refreshing photo urls")
+                        }
+                        return
                     }
-                    return
-                }
-                
-                print("fetching new results from model")
-                performUIUpdatesOnMain {
-                    self.executeSearch()
-                    self.photosCollectionView.reloadData()
-                    self.newCollectionButton.enabled = true
+                    
+                    print("fetching new results from model")
+                    performUIUpdatesOnMain {
+                        self.executeSearch()
+                        self.photosCollectionView.reloadData()
+                        self.newCollectionButton.enabled = true
+                    }
                 }
             }
+        } else {
+            // let's delete the selected photos
         }
+        
     }
     
     func refreshPhotos(pin: Pin, completionHandler: (success: Bool, errorMessage: String?) -> Void) {
@@ -148,7 +155,7 @@ extension PhotoAlbumViewController {
 }
 
 // MARK: - Delegates
-extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate {
+extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, NSFetchedResultsControllerDelegate {
 
     // keep the collection view in three columns
     // http://stackoverflow.com/a/35826884
@@ -162,6 +169,30 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, NSFetche
             + (flowLayout.minimumInteritemSpacing * CGFloat(numberOfItemsPerRow - 1))
         let size = Int((collectionView.bounds.width - totalSpace) / CGFloat(numberOfItemsPerRow))
         return CGSize(width: size, height: size)
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        print("select")
+        newCollectionButton.setTitle("Remove Selected Pictures", forState: .Normal)
+        if !selectedPhotos.contains(indexPath) {
+            selectedPhotos.append(indexPath)
+            print("photo added: \(indexPath)")
+            print("selected photos: \(selectedPhotos)")
+            collectionView.reloadData()
+        }
+    }
+    
+    func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
+        print("deselect")
+        if let index = selectedPhotos.indexOf(indexPath) {
+            selectedPhotos.removeAtIndex(index)
+            print("photo removed: \(indexPath)")
+            print("selected photos: \(selectedPhotos)")
+            collectionView.reloadData()
+        }
+        if selectedPhotos.count == 0 {
+            newCollectionButton.setTitle("New Collection", forState: .Normal)
+        }
     }
     
     /* update UI with changes that originate from CORE Data (alternative to doing it in collectionView:cellForItemAtIndexPath
@@ -254,6 +285,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                 let image = UIImage(data: data)
                 let imageView = UIImageView(image: image)
                 cell.backgroundView = imageView
+                if selectedPhotos.contains(indexPath) {
+                    cell.backgroundView!.alpha = 0.1
+                } else {
+                    cell.backgroundView!.alpha = 1.0
+                }
             
             } else {
             
