@@ -83,12 +83,12 @@ class PhotoAlbumViewController: UIViewController {
             
             if let urls = results {
                 
-                //print("remove existing Photos from CORE Data")
-                //if let pinPhotos = pin.photo?.allObjects as? [Photo] {
-                //    for photo in pinPhotos {
-                //        self.fetchedResultsController!.managedObjectContext.deleteObject(photo)
-                //    }
-                //}
+                print("remove existing Photos from CORE Data")
+                if let pinPhotos = pin.photo?.allObjects as? [Photo] {
+                    for photo in pinPhotos {
+                        self.fetchedResultsController!.managedObjectContext.deleteObject(photo)
+                    }
+                }
                 
                 print("creating new Photos in CORE Data")
                 for url in urls {
