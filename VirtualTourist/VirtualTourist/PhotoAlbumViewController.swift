@@ -66,6 +66,45 @@ class PhotoAlbumViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func refreshPhotos(pin: Pin, completionHandler: (success: Bool, errorMessage: String?) -> Void) {
+        
+        guard let latitude = pin.latitude as? Double, longitude = pin.longitude as? Double else {
+            completionHandler(success: false, errorMessage: "Input error")
+            return
+        }
+        
+        print("initiate Flickr request")
+        FlickrClient.sharedInstance().getLocationPhotos(latitude, longitude: longitude) { (success, error, results) in
+            
+            if success == false {
+                completionHandler(success: false, errorMessage: "Error getting photo urls")
+                return
+            }
+            
+            if let urls = results {
+                
+                //print("remove existing Photos from CORE Data")
+                //if let pinPhotos = pin.photo?.allObjects as? [Photo] {
+                //    for photo in pinPhotos {
+                //        self.fetchedResultsController!.managedObjectContext.deleteObject(photo)
+                //    }
+                //}
+                
+                print("creating new Photos in CORE Data")
+                for url in urls {
+                    let photo = Photo(url: url, context: self.fetchedResultsController!.managedObjectContext)
+                    photo.pin = self.selectedPin
+                }
+                
+                print("new cell count provided by Flickr request for photos: \(urls.count)")
+                completionHandler(success: true, errorMessage: nil)
+            
+            } else {
+                completionHandler(success: false, errorMessage: "Error getting photo urls")
+            }
+        }
+    }
+    
     
 }
 
@@ -84,7 +123,7 @@ extension PhotoAlbumViewController {
 }
 
 // MARK: - Delegates
-extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout {
+extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, NSFetchedResultsControllerDelegate {
 
     // keep the collection view in three columns
     // http://stackoverflow.com/a/35826884
@@ -107,28 +146,32 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout {
                     forChangeType type: NSFetchedResultsChangeType,
                     newIndexPath: NSIndexPath?) {
         
-        let set = NSIndexSet(index: sectionIndex)
+        if let ind = indexPath {
         
-        switch(type) {
-            
-            case .Insert:
-                print("insert photo")
-            
-            case .Delete:
-                print("delete photo")
-            
-            case .Update:
-                print("update photo")
-            
-            default:
-                print("ignored photo change")
+            switch(type) {
+                
+                case .Insert:
+                    print("insert photo")
+                    photosCollectionView.reloadItemsAtIndexPaths([ind])
+         
+                case .Delete:
+                    print("delete photo")
+                
+                
+                case .Update:
+                    print("update photo")
+                    photosCollectionView.reloadItemsAtIndexPaths([ind])
+                
+                default:
+                    print("ignored photo change")
+            }
         }
-    }
-    */
+        
+    } */
 }
 
 // MARK: - Data Sources
-extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResultsControllerDelegate {
+extension PhotoAlbumViewController: UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -143,10 +186,8 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
             
             print("no content")
             // initiate an album download from Flickr since there are no photos
-            if let loc = location {
-                print("initiate Flickr request")
-                FlickrClient.sharedInstance().getLocationPhotos(loc.coordinate.latitude, longitude: loc.coordinate.longitude) { (success, error, results) in
-                    
+            if let pin = selectedPin {
+                refreshPhotos(pin) { (success, errorMessage) in
                     if success == false {
                         performUIUpdatesOnMain {
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
@@ -154,28 +195,14 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
                         return
                     }
                     
-                    // create photos for the pin in CORE Data
-                    if let urls = results {
-                        print("creating new Photos in CORE Data")
-                        for url in urls {
-                            let photo = Photo(url: url, context: self.fetchedResultsController!.managedObjectContext)
-                            photo.pin = self.selectedPin
-                        }
-                        performUIUpdatesOnMain {
-                            print("fetching new results from model")
-                            self.executeSearch()
-                            collectionView.reloadData()
-                        }
-                        print("new cell count provided by Flickr request for photos: \(urls.count)")
-                    } else {
-                        performUIUpdatesOnMain {
-                            ControllerCommon.displayErrorDialog(self, message: "Error getting photos")
-                        }
+                    print("fetching new results from model")
+                    performUIUpdatesOnMain {
+                        self.executeSearch()
+                        collectionView.reloadData()
                     }
                 }
-            } else {
-                ControllerCommon.displayErrorDialog(self, message: "Error: no location data to retrieve photos")
             }
+            
         }
         
         print("returned row count: \(cellCount)")
@@ -205,8 +232,8 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
                 // get the picture data in the background
                 // http://stackoverflow.com/a/27377744
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-                    if let imageURL = NSURL(string: photo.url!) {
-                        let imageData = NSData(contentsOfURL: imageURL)
+                    if let imageURL = NSURL(string: photo.url!),
+                       let imageData = NSData(contentsOfURL: imageURL) {
                         photo.setValue(imageData, forKey: "data")
                         performUIUpdatesOnMain {
                             collectionView.reloadData()
