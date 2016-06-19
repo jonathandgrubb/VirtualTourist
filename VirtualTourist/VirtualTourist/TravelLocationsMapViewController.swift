@@ -186,12 +186,7 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
             let pred = NSPredicate(format: "(latitude = %@) AND (longitude = %@)", lat, lon)
             fr.predicate = pred
             executeSearch()
-            /*if let pin = fetchedResultsController!.fetchedObjects?.first as? Pin {
-                selectedPin = pin
-                print("pin was fetched: \(pin)")
-                // prepare to open the pictures associated with the place just clicked
-                performSegueWithIdentifier("PhotosViewSegue", sender: nil)
-            }*/
+            
             if let pins = fetchedResultsController!.fetchedObjects as? [Pin] {
                 let filteredPins = pins.filter { (p: Pin) -> Bool in
                     return p.latitude == lat && p.longitude == lon
@@ -203,7 +198,6 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
                     performSegueWithIdentifier("PhotosViewSegue", sender: nil)
                 }
             }
-            //performSegueWithIdentifier("PhotosViewSegue", sender: nil)
         
         } else {
             print("error clicking annotation")
@@ -227,13 +221,6 @@ extension TravelLocationsMapViewController {
                 fr.sortDescriptors = []
                 let pred = NSPredicate(format: "pin = %@", pin)
                 fr.predicate = pred
-                
-                /* create fetch request for the selected pin and try to get the photos by the linked relationship
-                let fr = NSFetchRequest(entityName: "Photo")
-                fr.sortDescriptors = []
-                let pred = NSPredicate(format: "pin.latitude = %@ AND pin.longitude = %@", annotation.coordinate.latitude, annotation.coordinate.longitude)
-                fr.predicate = pred
-                */
                 
                 let fc = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: fetchedResultsController!.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
                 

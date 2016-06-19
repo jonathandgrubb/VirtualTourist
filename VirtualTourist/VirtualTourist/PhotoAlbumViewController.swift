@@ -164,55 +164,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
         return cellCount
     }
     
-    /* before we broke the cell out into its own class
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        
-        // get the cell
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Photo", forIndexPath: indexPath)
-        
-        // stop the circle of patience if it was going
-        if let activityIndicator = cell.backgroundView as? UIActivityIndicatorView {
-            activityIndicator.stopAnimating()
-        }
-        
-        let label = UILabel(frame: cell.bounds)
-        label.text = "Loading..."
-        cell.contentView.addSubview(label)
-        
-        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
-        activityIndicator.hidesWhenStopped = true;
-        activityIndicator.center = cell.center;
-        activityIndicator.startAnimating()
-        cell.contentView.addSubview(activityIndicator)
-        
-        // get the Photo (if available)
-        
-        if let photo = fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo,
-           let data = photo.data {
-            
-            // put it into the cell if we have it
-            let image = UIImage(data: data)
-            let imageView = UIImageView(image: image)
-            cell.backgroundView = imageView
-        
-        } else {
-
-            // programmatically adding UIActivityView and start its animation
-            // http://sourcefreeze.com/uiactivityindicatorview-example-using-swift-in-ios/
-            // http://stackoverflow.com/questions/7212859/how-to-set-an-uiactivityindicatorview-when-loading-a-uitableviewcell
-            let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
-            activityIndicator.hidesWhenStopped = true;
-            activityIndicator.center = cell.center;
-            activityIndicator.startAnimating()
-            cell.backgroundView = activityIndicator
-            //cell.contentView.addSubview(activityIndicator)
-        }
-        
-        // return the cell
-        return cell
-    }
-    */
-    
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         // get the cell
