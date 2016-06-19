@@ -236,48 +236,7 @@ extension TravelLocationsMapViewController {
 // MARK:  - Delegate
 extension TravelLocationsMapViewController: NSFetchedResultsControllerDelegate{
     
-    /* if we ever need to update UI with changes that originate from CORE Data
-    func controller(controller: NSFetchedResultsController,
-                    didChangeObject anObject: AnyObject,
-                    atIndexPath indexPath: NSIndexPath?,
-                    forChangeType type: NSFetchedResultsChangeType,
-                    newIndexPath: NSIndexPath?) {
-        
-        if let pin = anObject as? Pin,
-           let latitude = pin.latitude,
-           let longitude = pin.longitude {
-    
-            // Notice that the float values are being used to create CLLocationDegree values.
-            // This is a version of the Double type.
-            let lat = CLLocationDegrees(latitude)
-            let long = CLLocationDegrees(longitude)
-            
-            // The lat and long are used to create a CLLocationCoordinates2D instance.
-            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-            
-            // Here we create the annotation and set its coordiates
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = coordinate
-            
-            switch(type){
-                
-                case .Insert:
-                    print("insert annotation")
-                    mapView.addAnnotation(annotation)
-                
-                case .Delete:
-                    print("delete annotation")
-                    mapView.removeAnnotation(annotation)
-                
-                case .Update:
-                    print("update annotation")
-                
-                case .Move:
-                    print("move annotation")
-            }
-        }
-    }
-    */
+
     
 }
 

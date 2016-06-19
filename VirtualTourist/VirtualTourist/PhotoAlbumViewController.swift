@@ -25,7 +25,9 @@ class PhotoAlbumViewController: UIViewController {
             // reload the table
             fetchedResultsController?.delegate = self
             executeSearch()
-            //photosCollectionView.reloadData()
+            //performUIUpdatesOnMain {
+            //    self.photosCollectionView.reloadData()
+            //}
         }
     }
     
@@ -98,15 +100,31 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: size, height: size)
     }
     
-    // if we ever need to update UI with changes that originate from CORE Data
+    /* update UI with changes that originate from CORE Data (alternative to doing it in collectionView:cellForItemAtIndexPath
     func controller(controller: NSFetchedResultsController,
                     didChangeObject anObject: AnyObject,
                     atIndexPath indexPath: NSIndexPath?,
                     forChangeType type: NSFetchedResultsChangeType,
                     newIndexPath: NSIndexPath?) {
         
-        print("something changed")
+        let set = NSIndexSet(index: sectionIndex)
+        
+        switch(type) {
+            
+            case .Insert:
+                print("insert photo")
+            
+            case .Delete:
+                print("delete photo")
+            
+            case .Update:
+                print("update photo")
+            
+            default:
+                print("ignored photo change")
+        }
     }
+    */
 }
 
 // MARK: - Data Sources
@@ -173,23 +191,38 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, NSFetchedResults
         cell.activityIndicator.stopAnimating()
         
         // get the Photo (if available)
-        if let photo = fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo,
-            let data = photo.data {
+        if let photo = fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo {
             
-            // put it into the cell if we have it
-            let image = UIImage(data: data)
-            let imageView = UIImageView(image: image)
-            cell.backgroundView = imageView
+            if let data = photo.data {
             
-        } else {
+                // put it into the cell if we have it
+                let image = UIImage(data: data)
+                let imageView = UIImageView(image: image)
+                cell.backgroundView = imageView
             
-            // haven't loaded the picture yet
-            cell.activityIndicator.startAnimating()
+            } else {
+            
+                // get the picture data in the background
+                // http://stackoverflow.com/a/27377744
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+                    if let imageURL = NSURL(string: photo.url!) {
+                        let imageData = NSData(contentsOfURL: imageURL)
+                        //photo.data = imageData
+                        photo.setValue(imageData, forKey: "data")
+                        performUIUpdatesOnMain {
+                            collectionView.reloadData()
+                        }
+                    }
+                }
+                // haven't loaded the picture yet
+                cell.activityIndicator.startAnimating()
+            }
         }
         
         // return the cell
         return cell
     }
+    
 }
 
 
