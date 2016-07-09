@@ -49,11 +49,18 @@ class PhotoAlbumViewController: UIViewController {
         super.viewDidLoad()
         
         if let loc = location {
-            // display the current location
+            // map - display the current location
             let currentAnnotations = mapView.annotations
             mapView.removeAnnotations(currentAnnotations)
             mapView.addAnnotation(loc)
             
+            // map - disable user interaction
+            // http://stackoverflow.com/a/15419639
+            mapView.zoomEnabled = false;
+            mapView.scrollEnabled = false;
+            mapView.userInteractionEnabled = false;
+            
+            // map - set how much to zoom on the pin
             let center = CLLocationCoordinate2D(latitude: loc.coordinate.latitude, longitude: loc.coordinate.longitude)
             let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
             let region = MKCoordinateRegion(center: center, span: span)
