@@ -20,7 +20,6 @@ public class Photo: NSManagedObject {
         if let ent = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context){
             self.init(entity: ent, insertIntoManagedObjectContext: context)
             self.url = url
-            self.selected = false
         } else {
             fatalError("Unable to find Entity name!")
         }
