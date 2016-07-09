@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB011CE91D31B3500000FF29 /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB011CE71D31B3500000FF29 /* Photo+CoreDataProperties.swift */; };
 		AB65D3F81D13770900BC497A /* GCDBlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB65D3F71D13770900BC497A /* GCDBlackBox.swift */; };
 		AB823DE61CFCCB0C0009ED6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823DE51CFCCB0C0009ED6E /* AppDelegate.swift */; };
 		AB823DE81CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823DE71CFCCB0C0009ED6E /* TravelLocationsMapViewController.swift */; };
@@ -25,7 +26,6 @@
 		AB823E2B1CFCF5A60009ED6E /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB823E2A1CFCF5A60009ED6E /* CoreDataStack.swift */; };
 		AB87CCED1D15FA37002244EB /* PhotoCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB87CCEC1D15FA37002244EB /* PhotoCellView.swift */; };
 		AB87CCFD1D161751002244EB /* Pin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB87CCF91D161751002244EB /* Pin+CoreDataProperties.swift */; };
-		AB95FDB01D173F8000DDEBDD /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB95FDAE1D173F8000DDEBDD /* Photo+CoreDataProperties.swift */; };
 		ABA27B4A1D10D25100A08FBB /* ControllerCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA27B491D10D25100A08FBB /* ControllerCommon.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AB011CE71D31B3500000FF29 /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "../Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AB65D3F71D13770900BC497A /* GCDBlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDBlackBox.swift; sourceTree = "<group>"; };
 		AB823DE21CFCCB0C0009ED6E /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB823DE51CFCCB0C0009ED6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -71,7 +72,6 @@
 		AB823E2A1CFCF5A60009ED6E /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		AB87CCEC1D15FA37002244EB /* PhotoCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCellView.swift; sourceTree = "<group>"; };
 		AB87CCF91D161751002244EB /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataProperties.swift"; path = "../Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		AB95FDAE1D173F8000DDEBDD /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "../Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		ABA27B491D10D25100A08FBB /* ControllerCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerCommon.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -169,7 +169,7 @@
 			children = (
 				AB823E171CFCD7380009ED6E /* Model.xcdatamodeld */,
 				AB87CCF91D161751002244EB /* Pin+CoreDataProperties.swift */,
-				AB95FDAE1D173F8000DDEBDD /* Photo+CoreDataProperties.swift */,
+				AB011CE71D31B3500000FF29 /* Photo+CoreDataProperties.swift */,
 				AB823E231CFCF52C0009ED6E /* Pin.swift */,
 				AB823E251CFCF52C0009ED6E /* Photo.swift */,
 				AB823E2A1CFCF5A60009ED6E /* CoreDataStack.swift */,
@@ -359,7 +359,7 @@
 				AB823DE61CFCCB0C0009ED6E /* AppDelegate.swift in Sources */,
 				AB823E291CFCF52C0009ED6E /* Photo.swift in Sources */,
 				AB823E161CFCD6470009ED6E /* PhotoAlbumViewController.swift in Sources */,
-				AB95FDB01D173F8000DDEBDD /* Photo+CoreDataProperties.swift in Sources */,
+				AB011CE91D31B3500000FF29 /* Photo+CoreDataProperties.swift in Sources */,
 				AB823E191CFCD7380009ED6E /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -176,8 +176,9 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
         newCollectionButton.setTitle("Remove Selected Pictures", forState: .Normal)
         if !selectedPhotos.contains(indexPath) {
             selectedPhotos.append(indexPath)
-            print("photo added: \(indexPath)")
-            print("selected photos: \(selectedPhotos)")
+            print("photo added")
+            print("selected photos: \(selectedPhotos.count)")
+            collectionView.cellForItemAtIndexPath(indexPath)!.selected = true
             collectionView.reloadData()
         }
     }
@@ -186,13 +187,18 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
         print("deselect")
         if let index = selectedPhotos.indexOf(indexPath) {
             selectedPhotos.removeAtIndex(index)
-            print("photo removed: \(indexPath)")
-            print("selected photos: \(selectedPhotos)")
+            print("photo removed")
+            print("selected photos: \(selectedPhotos.count)")
+            collectionView.cellForItemAtIndexPath(indexPath)!.selected = false
             collectionView.reloadData()
         }
         if selectedPhotos.count == 0 {
             newCollectionButton.setTitle("New Collection", forState: .Normal)
         }
+    }
+    
+    func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
     }
     
     /* update UI with changes that originate from CORE Data (alternative to doing it in collectionView:cellForItemAtIndexPath
@@ -275,6 +281,9 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
         
         // stop the circle of patience (if it was going)
         cell.activityIndicator.stopAnimating()
+        
+        // enable user interaction
+        cell.userInteractionEnabled = true
         
         // get the Photo (if available)
         if let photo = fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo {
