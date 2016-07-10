@@ -72,6 +72,7 @@ class PhotoAlbumViewController: UIViewController {
         }
         
         // photosCollectionView
+        photosCollectionView.allowsMultipleSelection = true
         if fetchedResultsController!.fetchedObjects?.count == 0 {
             print("no content for this location... get photos")
             // initiate an album download from Flickr since there are no photos
@@ -137,6 +138,19 @@ class PhotoAlbumViewController: UIViewController {
             }
         } else {
             // let's delete the selected photos
+            print("delete number of selected items: \(photosCollectionView.indexPathsForSelectedItems()!.count)")
+            if let cells = photosCollectionView.indexPathsForSelectedItems() {
+                for cell in cells {
+                    let photo = fetchedResultsController!.objectAtIndexPath(cell) as! Photo
+                    fetchedResultsController!.managedObjectContext.deleteObject(photo)
+                }
+                performUIUpdatesOnMain {
+                    self.executeSearch()
+                    self.photosCollectionView.reloadData()
+                    self.newCollectionButton.enabled = true
+                }
+            }
+            newCollectionButton.setTitle("New Collection", forState: .Normal)
         }
         
     }
@@ -218,7 +232,13 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        print("select")
+        if let cell = collectionView.cellForItemAtIndexPath(indexPath) {
+            cell.highlighted = true
+            print("select: \(cell.highlighted)")
+            cell.backgroundView!.alpha = 0.1
+            newCollectionButton.setTitle("Remove Selected Pictures", forState: .Normal)
+        }
+        /*
         newCollectionButton.setTitle("Remove Selected Pictures", forState: .Normal)
         if !selectedPhotos.contains(indexPath) {
             selectedPhotos.append(indexPath)
@@ -227,10 +247,19 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
             collectionView.cellForItemAtIndexPath(indexPath)!.selected = true
             collectionView.reloadData()
         }
+        */
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
-        print("deselect")
+        if let cell = collectionView.cellForItemAtIndexPath(indexPath) {
+            cell.highlighted = false
+            print("deselect: \(cell.highlighted)")
+            cell.backgroundView!.alpha = 1.0
+        }
+        if photosCollectionView.indexPathsForSelectedItems() == nil {
+            newCollectionButton.setTitle("New Collection", forState: .Normal)
+        }
+        /*
         if let index = selectedPhotos.indexOf(indexPath) {
             selectedPhotos.removeAtIndex(index)
             print("photo removed")
@@ -241,6 +270,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
         if selectedPhotos.count == 0 {
             newCollectionButton.setTitle("New Collection", forState: .Normal)
         }
+        */
     }
     
     func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
