@@ -76,33 +76,41 @@ class PhotoAlbumViewController: UIViewController {
     }
     
     @IBAction func newCollectionSelected(sender: AnyObject) {
-        if newCollectionButton.titleLabel == "New Collection" {
+        print("newCollectionButton titleLabel is: \(newCollectionButton.titleLabel!.text!)")
+        if newCollectionButton.titleLabel!.text! == "New Collection" {
             // let's refresh the photos
             if let pin = selectedPin {
                 newCollectionButton.enabled = false
                 
-                refreshPhotos(pin) { (success, errorMessage) in
-                    
-                    if success == false {
-                        performUIUpdatesOnMain {
-                            self.newCollectionButton.enabled = true
-                            ControllerCommon.displayErrorDialog(self, message: "Error refreshing photo urls")
-                        }
-                        return
-                    }
-                    
-                    print("fetching new results from model")
-                    performUIUpdatesOnMain {
-                        self.executeSearch()
-                        self.photosCollectionView.reloadData()
-                        self.newCollectionButton.enabled = true
-                    }
+                clearPhotos(pin)
+                do {
+                    try self.fetchedResultsController!.managedObjectContext.save()
+                } catch {
+                    print("exception while clearning out the entries")
                 }
+                
+                print("fetching cleared results from model")
+                performUIUpdatesOnMain {
+                    self.executeSearch()
+                    self.photosCollectionView.reloadData()
+                    self.newCollectionButton.enabled = true
+                }
+                
             }
         } else {
             // let's delete the selected photos
         }
         
+    }
+    
+    func clearPhotos(pin: Pin) {
+        print("remove existing Photos from CORE Data")
+        if let pinPhotos = pin.photo?.allObjects as? [Photo] {
+            for photo in pinPhotos {
+                print("deleting photo: \(photo.url)")
+                self.fetchedResultsController!.managedObjectContext.deleteObject(photo)
+            }
+        }
     }
     
     func refreshPhotos(pin: Pin, completionHandler: (success: Bool, errorMessage: String?) -> Void) {
@@ -121,13 +129,6 @@ class PhotoAlbumViewController: UIViewController {
             }
             
             if let urls = results {
-                
-                print("remove existing Photos from CORE Data")
-                if let pinPhotos = pin.photo?.allObjects as? [Photo] {
-                    for photo in pinPhotos {
-                        self.fetchedResultsController!.managedObjectContext.deleteObject(photo)
-                    }
-                }
                 
                 print("creating new Photos in CORE Data")
                 for url in urls {
@@ -236,7 +237,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
             }
         }
         
-    } */
+    }*/
 }
 
 // MARK: - Data Sources
@@ -316,11 +317,12 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                        let imageData = NSData(contentsOfURL: imageURL) {
                         photo.setValue(imageData, forKey: "data")
                         performUIUpdatesOnMain {
-                            collectionView.reloadData()
+                            collectionView.reloadItemsAtIndexPaths([indexPath])
                         }
                     }
                 }
                 // haven't loaded the picture yet
+                cell.backgroundView = nil
                 cell.activityIndicator.startAnimating()
             }
         }
