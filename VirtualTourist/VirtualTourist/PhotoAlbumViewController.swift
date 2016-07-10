@@ -238,16 +238,6 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
             cell.backgroundView!.alpha = 0.1
             newCollectionButton.setTitle("Remove Selected Pictures", forState: .Normal)
         }
-        /*
-        newCollectionButton.setTitle("Remove Selected Pictures", forState: .Normal)
-        if !selectedPhotos.contains(indexPath) {
-            selectedPhotos.append(indexPath)
-            print("photo added")
-            print("selected photos: \(selectedPhotos.count)")
-            collectionView.cellForItemAtIndexPath(indexPath)!.selected = true
-            collectionView.reloadData()
-        }
-        */
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
@@ -259,18 +249,6 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
         if photosCollectionView.indexPathsForSelectedItems() == nil {
             newCollectionButton.setTitle("New Collection", forState: .Normal)
         }
-        /*
-        if let index = selectedPhotos.indexOf(indexPath) {
-            selectedPhotos.removeAtIndex(index)
-            print("photo removed")
-            print("selected photos: \(selectedPhotos.count)")
-            collectionView.cellForItemAtIndexPath(indexPath)!.selected = false
-            collectionView.reloadData()
-        }
-        if selectedPhotos.count == 0 {
-            newCollectionButton.setTitle("New Collection", forState: .Normal)
-        }
-        */
     }
     
     func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -342,11 +320,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                 let image = UIImage(data: data)
                 let imageView = UIImageView(image: image)
                 cell.backgroundView = imageView
-                if selectedPhotos.contains(indexPath) {
-                    cell.backgroundView!.alpha = 0.1
-                } else {
-                    cell.backgroundView!.alpha = 1.0
-                }
             
             } else {
             
