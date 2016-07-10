@@ -58,6 +58,7 @@ extension FlickrClient {
         
     }
 
+    /*
     func refreshAlbum(latitude: Double, longitude: Double, refreshAlbumCompletionHandler: (success: Bool, error: Constants.Errors?, images: [NSData]?) -> Void) {
         
         FlickrClient.sharedInstance().getLocationPhotos(latitude, longitude: longitude) { (success, error, results) in
@@ -84,6 +85,7 @@ extension FlickrClient {
             }
         }
     }
+    */
 
     // Jarrod Parkes - create a box of tolerance around our coordinates
     private static func bboxString(latitude: String, longitude: String) -> String {
