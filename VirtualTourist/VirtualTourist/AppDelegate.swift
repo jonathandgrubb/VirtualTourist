@@ -15,6 +15,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let stack = CoreDataStack(modelName: "Model")!
     
+    func checkIfFirstLaunch() {
+        if (NSUserDefaults.standardUserDefaults().boolForKey("hasLaunchedBefore")) {
+            print("launched before")
+        } else {
+            print("first launch ever!")
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "hasLaunchedBefore")
+            NSUserDefaults.standardUserDefaults().setDouble(39.54, forKey: "centerLat")
+            NSUserDefaults.standardUserDefaults().setDouble(-96.85, forKey: "centerLon")
+            NSUserDefaults.standardUserDefaults().setDouble(75.06, forKey: "spanLat")
+            NSUserDefaults.standardUserDefaults().setDouble(57.27, forKey: "spanLon")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Start Autosaving
         stack.autoSave(60)

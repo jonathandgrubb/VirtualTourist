@@ -10,12 +10,14 @@ import UIKit
 import CoreData
 import MapKit
 
-class TravelLocationsMapViewController: UIViewController {
+class TravelLocationsMapViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
     // MARK: - Outlets
     @IBOutlet weak var mapView: MKMapView!
     
     var selectedPin: Pin?
+    var userDataChanged: Bool = false
+    var autoSaveEnabled: Bool?
     
     // MARK:  - Properties
     var fetchedResultsController : NSFetchedResultsController? {
@@ -50,6 +52,16 @@ class TravelLocationsMapViewController: UIViewController {
         uilgr.minimumPressDuration = 2.0
         mapView.addGestureRecognizer(uilgr)
         
+        // setting initial region for mapView from UserDefaults
+        let centerLat = NSUserDefaults.standardUserDefaults().doubleForKey("centerLat")
+        let centerLon = NSUserDefaults.standardUserDefaults().doubleForKey("centerLon")
+        let spanLat = NSUserDefaults.standardUserDefaults().doubleForKey("spanLat")
+        let spanLon = NSUserDefaults.standardUserDefaults().doubleForKey("spanLon")
+        let center = CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon)
+        let span = MKCoordinateSpan(latitudeDelta: spanLat, longitudeDelta: spanLon)
+        let region = MKCoordinateRegion(center: center, span: span)
+        mapView.setRegion(region, animated: false)
+        
         // Get the stack
         let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
         let stack = delegate.stack
@@ -64,6 +76,17 @@ class TravelLocationsMapViewController: UIViewController {
         
         // see if we have any pins saved in CORE Data and load them onto the map as annotations
         print("Number of fetchedObjects: \(fetchedResultsController!.fetchedObjects!.count)")
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        // check for UserDefaults changes every two seconds
+        autoSaveEnabled = true
+        autoSaveUserDefaults(2)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        // don't check for UserDefaults changes when this view isn't active
+        autoSaveEnabled = false
     }
     
     // reload map with results from fetchedResultsController
@@ -207,6 +230,43 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
         }
     }
     
+    // write the map region changes to UserDefaults (but don't sync)
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        
+        print("map region changed")
+        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.center.latitude, forKey: "centerLat")
+        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.center.longitude, forKey: "centerLon")
+        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.span.latitudeDelta, forKey: "spanLat")
+        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.span.longitudeDelta, forKey: "spanLon")
+        
+        print("lat: \(mapView.region.center.latitude)")
+        print("lon: \(mapView.region.center.longitude)")
+        print("latd: \(mapView.region.span.latitudeDelta)")
+        print("lond: \(mapView.region.span.longitudeDelta)")
+        
+        userDataChanged = true
+    }
+    
+    // only sync the UserDefaults (current map region) every once in a while
+    func autoSaveUserDefaults(delayInSeconds : Int){
+        
+        if delayInSeconds > 0 && autoSaveEnabled! == true {
+            
+            if userDataChanged == true {
+                print("Autosaving UserDefaults")
+                NSUserDefaults.standardUserDefaults().synchronize()
+                userDataChanged = false
+            }
+            
+            let delayInNanoSeconds = UInt64(delayInSeconds) * NSEC_PER_SEC
+            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delayInNanoSeconds))
+            
+            dispatch_after(time, dispatch_get_main_queue(), {
+                self.autoSaveUserDefaults(delayInSeconds)
+            })
+            
+        }
+    }
 }
 
 extension TravelLocationsMapViewController {
@@ -236,12 +296,6 @@ extension TravelLocationsMapViewController {
     }
 }
 
-// MARK:  - Delegate
-extension TravelLocationsMapViewController: NSFetchedResultsControllerDelegate{
-    
-
-    
-}
 
 
 

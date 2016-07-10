@@ -147,6 +147,7 @@ class PhotoAlbumViewController: UIViewController {
         
     }
     
+    // remove the Photos for this Pin from CORE Data
     func clearPhotos(pin: Pin) {
         print("remove existing Photos from CORE Data")
         if let pinPhotos = pin.photo?.allObjects as? [Photo] {
@@ -156,6 +157,7 @@ class PhotoAlbumViewController: UIViewController {
         }
     }
 
+    // request more Photos for this Pin from Flickr and store in CORE Data
     func refreshPhotos(pin: Pin, completionHandler: (success: Bool, errorMessage: String?) -> Void) {
         
         guard let latitude = pin.latitude as? Double, longitude = pin.longitude as? Double else {
@@ -228,31 +230,32 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
         return CGSize(width: size, height: size)
     }
     
+    // mark a cell eligible for deletion
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         if let cell = collectionView.cellForItemAtIndexPath(indexPath) {
             cell.highlighted = true
             print("select: \(cell.highlighted)")
             cell.backgroundView!.alpha = 0.1
+            
+            // rename the 'New Collection' button for deleting
             newCollectionButton.setTitle("Remove Selected Pictures", forState: .Normal)
         }
     }
     
+    // unmark a cell for deletion
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
         if let cell = collectionView.cellForItemAtIndexPath(indexPath) {
             cell.highlighted = false
             print("deselect: \(cell.highlighted)")
             cell.backgroundView!.alpha = 1.0
         }
+        // name 'New Collection' button back to original name if no cells are marked eligible for deletion
         if photosCollectionView.indexPathsForSelectedItems() == nil {
             newCollectionButton.setTitle("New Collection", forState: .Normal)
         }
     }
     
-    func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
-    // update UI with changes that originate from CORE Data (alternative to doing it in collectionView:cellForItemAtIndexPath
+    // update UI with changes that originate from CORE Data (all but the insert event)
     func controller(controller: NSFetchedResultsController,
                     didChangeObject anObject: AnyObject,
                     atIndexPath indexPath: NSIndexPath?,
@@ -300,6 +303,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
 // MARK: - Data Sources
 extension PhotoAlbumViewController: UICollectionViewDataSource {
     
+    // how many cells are in the Photos UICollectionView?
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         var cellCount = 0
@@ -311,6 +315,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
         return cellCount
     }
     
+    // what to display in the particular cell of the Photos UICollectionView
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         // get the cell
