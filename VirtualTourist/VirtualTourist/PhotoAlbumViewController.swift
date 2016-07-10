@@ -48,6 +48,7 @@ class PhotoAlbumViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // mapView
         if let loc = location {
             // map - display the current location
             let currentAnnotations = mapView.annotations
@@ -65,9 +66,36 @@ class PhotoAlbumViewController: UIViewController {
             let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
             let region = MKCoordinateRegion(center: center, span: span)
             mapView.setRegion(region, animated: false)
+            
         } else {
             ControllerCommon.displayErrorDialog(self, message: "Could not display current location on map")
         }
+        
+        // photosCollectionView
+        if fetchedResultsController!.fetchedObjects?.count == 0 {
+            print("no content for this location... get photos")
+            // initiate an album download from Flickr since there are no photos
+            if let pin = selectedPin {
+                newCollectionButton.enabled = false
+                refreshPhotos(pin) { (success, errorMessage) in
+                    if success == false {
+                        performUIUpdatesOnMain {
+                            self.newCollectionButton.enabled = true
+                            ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
+                        }
+                        return
+                    }
+                    
+                    print("fetching new results from model")
+                    performUIUpdatesOnMain {
+                        self.executeSearch()
+                        self.photosCollectionView.reloadData()
+                        self.newCollectionButton.enabled = true
+                    }
+                }
+            }
+        }
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -83,17 +111,27 @@ class PhotoAlbumViewController: UIViewController {
                 newCollectionButton.enabled = false
                 
                 clearPhotos(pin)
-                do {
-                    try self.fetchedResultsController!.managedObjectContext.save()
-                } catch {
-                    print("exception while clearning out the entries")
-                }
                 
                 print("fetching cleared results from model")
                 performUIUpdatesOnMain {
                     self.executeSearch()
                     self.photosCollectionView.reloadData()
                     self.newCollectionButton.enabled = true
+                }
+                
+                refreshPhotos(pin) { (success, errorMessage) in
+                    if success == false {
+                        performUIUpdatesOnMain {
+                            self.newCollectionButton.enabled = true
+                            ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
+                        }
+                        return
+                    }
+                    performUIUpdatesOnMain {
+                        self.executeSearch()
+                        self.photosCollectionView.reloadData()
+                        self.newCollectionButton.enabled = true
+                    }
                 }
                 
             }
@@ -248,37 +286,9 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
         var cellCount = 0
         // how many cells?
         if let objs = fetchedResultsController?.fetchedObjects {
-            print("original cell count by fetch: \(objs.count)")
             cellCount = objs.count
         }
-        
-        if cellCount == 0 {
-            
-            print("no content")
-            // initiate an album download from Flickr since there are no photos
-            if let pin = selectedPin {
-                newCollectionButton.enabled = false
-                refreshPhotos(pin) { (success, errorMessage) in
-                    if success == false {
-                        performUIUpdatesOnMain {
-                            self.newCollectionButton.enabled = true
-                            ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
-                        }
-                        return
-                    }
-                    
-                    print("fetching new results from model")
-                    performUIUpdatesOnMain {
-                        self.executeSearch()
-                        collectionView.reloadData()
-                        self.newCollectionButton.enabled = true
-                    }
-                }
-            }
-            
-        }
-        
-        print("returned row count: \(cellCount)")
+        print("cell count: \(cellCount)")
         return cellCount
     }
     
