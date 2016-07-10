@@ -73,7 +73,7 @@ class PhotoAlbumViewController: UIViewController {
         }
         
         // photosCollectionView
-        photosCollectionView.backgroundView?.alpha = 1.0
+        self.photosCollectionView.hidden = false
         photosCollectionView.allowsMultipleSelection = true
         if fetchedResultsController!.fetchedObjects?.count == 0 {
             print("no content for this location... get photos")
@@ -92,10 +92,10 @@ class PhotoAlbumViewController: UIViewController {
                         }
                         
                         if count == 0 {
-                            // set the background of the photosCollectionView to transparent for "no results" label
-                            self.photosCollectionView.backgroundView?.alpha = 0.0
+                            // hide the photosCollectionView to show the "no results" label
+                            self.photosCollectionView.hidden = true
                         } else {
-                            self.photosCollectionView.backgroundView?.alpha = 1.0
+                            self.photosCollectionView.hidden = false
                         }
                         
                         // reenable the 'New Collection' button
@@ -132,9 +132,9 @@ class PhotoAlbumViewController: UIViewController {
                         
                         if count == 0 {
                             // set the background of the photosCollectionView to transparent for "no results" label
-                            self.photosCollectionView.backgroundView?.alpha = 0.0
+                            self.photosCollectionView.hidden = true
                         } else {
-                            self.photosCollectionView.backgroundView?.alpha = 1.0
+                            self.photosCollectionView.hidden = false
                         }
                         
                         // reenable the 'New Collection' button

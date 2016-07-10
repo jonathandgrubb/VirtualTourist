@@ -73,6 +73,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="This pin has no images" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VGS-sG-d6Q">
+                                <rect key="frame" x="279" y="290" width="55" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="OjN-Wf-dew">
                                 <rect key="frame" x="20" y="20" width="560" height="166"/>
                                 <constraints>
@@ -146,6 +152,8 @@
                             <constraint firstAttribute="leadingMargin" secondItem="OjN-Wf-dew" secondAttribute="leading" id="W0o-j5-EIQ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="0T7-sa-NRs" secondAttribute="trailing" id="Z3b-Rl-qkb"/>
                             <constraint firstAttribute="trailingMargin" secondItem="OjN-Wf-dew" secondAttribute="trailing" id="ZoF-qf-DTe"/>
+                            <constraint firstItem="VGS-sG-d6Q" firstAttribute="centerX" secondItem="tVL-xu-SY8" secondAttribute="centerX" id="hAm-EV-NLC"/>
+                            <constraint firstItem="VGS-sG-d6Q" firstAttribute="centerY" secondItem="tVL-xu-SY8" secondAttribute="centerY" id="kAu-OH-2MF"/>
                             <constraint firstItem="e19-i1-TiZ" firstAttribute="top" secondItem="0T7-sa-NRs" secondAttribute="bottom" id="qfT-Zu-fak"/>
                         </constraints>
                     </view>
