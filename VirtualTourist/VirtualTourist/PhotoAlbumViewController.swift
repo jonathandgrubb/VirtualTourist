@@ -19,6 +19,7 @@ class PhotoAlbumViewController: UIViewController {
     var location: MKAnnotation?
     var selectedPin: Pin?
     var selectedPhotos = [NSIndexPath]()
+    var deleteQueue = [NSIndexPath]()
     
     // MARK:  - Properties
     var fetchedResultsController : NSFetchedResultsController? {
@@ -27,9 +28,9 @@ class PhotoAlbumViewController: UIViewController {
             // reload the table
             fetchedResultsController?.delegate = self
             executeSearch()
-            //performUIUpdatesOnMain {
-            //    self.photosCollectionView.reloadData()
-            //}
+            performUIUpdatesOnMain {
+                self.photosCollectionView.reloadData()
+            }
         }
     }
     
@@ -75,24 +76,26 @@ class PhotoAlbumViewController: UIViewController {
         photosCollectionView.allowsMultipleSelection = true
         if fetchedResultsController!.fetchedObjects?.count == 0 {
             print("no content for this location... get photos")
+            
             // initiate an album download from Flickr since there are no photos
             if let pin = selectedPin {
+                
+                // disable the 'New Collection' button
                 newCollectionButton.enabled = false
+                
                 refreshPhotos(pin) { (success, errorMessage) in
                     if success == false {
                         performUIUpdatesOnMain {
                             self.newCollectionButton.enabled = true
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
                         }
-                        return
                     }
                     
-                    print("fetching new results from model")
+                    // reenable the 'New Collection' button
                     performUIUpdatesOnMain {
-                        self.executeSearch()
-                        self.photosCollectionView.reloadData()
                         self.newCollectionButton.enabled = true
                     }
+                    
                 }
             }
         }
@@ -109,16 +112,11 @@ class PhotoAlbumViewController: UIViewController {
         if newCollectionButton.titleLabel!.text! == "New Collection" {
             // let's refresh the photos
             if let pin = selectedPin {
+                
+                // disable the 'New Collection' button
                 newCollectionButton.enabled = false
                 
                 clearPhotos(pin)
-                
-                print("fetching cleared results from model")
-                performUIUpdatesOnMain {
-                    self.executeSearch()
-                    self.photosCollectionView.reloadData()
-                    self.newCollectionButton.enabled = true
-                }
                 
                 refreshPhotos(pin) { (success, errorMessage) in
                     if success == false {
@@ -126,11 +124,10 @@ class PhotoAlbumViewController: UIViewController {
                             self.newCollectionButton.enabled = true
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
                         }
-                        return
-                    }
+                     }
+                    
+                    // reenable the 'New Collection' button
                     performUIUpdatesOnMain {
-                        self.executeSearch()
-                        self.photosCollectionView.reloadData()
                         self.newCollectionButton.enabled = true
                     }
                 }
@@ -139,15 +136,10 @@ class PhotoAlbumViewController: UIViewController {
         } else {
             // let's delete the selected photos
             print("delete number of selected items: \(photosCollectionView.indexPathsForSelectedItems()!.count)")
-            if let cells = photosCollectionView.indexPathsForSelectedItems() {
-                for cell in cells {
-                    let photo = fetchedResultsController!.objectAtIndexPath(cell) as! Photo
+            if let indexPaths = photosCollectionView.indexPathsForSelectedItems() {
+                for index in indexPaths {
+                    let photo = fetchedResultsController!.objectAtIndexPath(index) as! Photo
                     fetchedResultsController!.managedObjectContext.deleteObject(photo)
-                }
-                performUIUpdatesOnMain {
-                    self.executeSearch()
-                    self.photosCollectionView.reloadData()
-                    self.newCollectionButton.enabled = true
                 }
             }
             newCollectionButton.setTitle("New Collection", forState: .Normal)
@@ -159,12 +151,11 @@ class PhotoAlbumViewController: UIViewController {
         print("remove existing Photos from CORE Data")
         if let pinPhotos = pin.photo?.allObjects as? [Photo] {
             for photo in pinPhotos {
-                print("deleting photo: \(photo.url)")
                 self.fetchedResultsController!.managedObjectContext.deleteObject(photo)
             }
         }
     }
-    
+
     func refreshPhotos(pin: Pin, completionHandler: (success: Bool, errorMessage: String?) -> Void) {
         
         guard let latitude = pin.latitude as? Double, longitude = pin.longitude as? Double else {
@@ -188,6 +179,12 @@ class PhotoAlbumViewController: UIViewController {
                     photo.pin = self.selectedPin
                 }
                 
+                // needed because 'insert' event never fires for the frc
+                performUIUpdatesOnMain {
+                    self.executeSearch()
+                    self.photosCollectionView.reloadData()
+                }
+                
                 print("new cell count provided by Flickr request for photos: \(urls.count)")
                 completionHandler(success: true, errorMessage: nil)
             
@@ -196,7 +193,7 @@ class PhotoAlbumViewController: UIViewController {
             }
         }
     }
-    
+
     
 }
 
@@ -255,7 +252,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
         return true
     }
     
-    /* update UI with changes that originate from CORE Data (alternative to doing it in collectionView:cellForItemAtIndexPath
+    // update UI with changes that originate from CORE Data (alternative to doing it in collectionView:cellForItemAtIndexPath
     func controller(controller: NSFetchedResultsController,
                     didChangeObject anObject: AnyObject,
                     atIndexPath indexPath: NSIndexPath?,
@@ -267,23 +264,37 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout, UICollec
             switch(type) {
                 
                 case .Insert:
-                    print("insert photo")
-                    photosCollectionView.reloadItemsAtIndexPaths([ind])
+                    // this event never fires
+                    print("insert photo: \(ind)")
+                    photosCollectionView.insertItemsAtIndexPaths([ind])
          
                 case .Delete:
-                    print("delete photo")
-                
+                    print("delete photo: \(ind)")
+                    // queued approach to delete
+                    //https://github.com/AshFurrow/UICollectionView-NSFetchedResultsController
+                    deleteQueue.append(ind)
                 
                 case .Update:
-                    print("update photo")
+                    print("update photo: \(ind)")
                     photosCollectionView.reloadItemsAtIndexPaths([ind])
                 
                 default:
-                    print("ignored photo change")
+                    print("ignored photo change: \(ind)")
             }
         }
         
-    }*/
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        print("controllerDidChangeContent")
+        // queued approach to delete
+        //https://github.com/AshFurrow/UICollectionView-NSFetchedResultsController
+        if deleteQueue.count > 0 {
+            photosCollectionView.deleteItemsAtIndexPaths(deleteQueue)
+            deleteQueue.removeAll()
+        }
+    }
+    
 }
 
 // MARK: - Data Sources
@@ -320,6 +331,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                 let image = UIImage(data: data)
                 let imageView = UIImageView(image: image)
                 cell.backgroundView = imageView
+                if cell.selected == true {
+                    cell.backgroundView!.alpha = 0.1
+                } else {
+                    cell.backgroundView!.alpha = 1.0
+                }
             
             } else {
             
@@ -329,9 +345,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource {
                     if let imageURL = NSURL(string: photo.url!),
                        let imageData = NSData(contentsOfURL: imageURL) {
                         photo.setValue(imageData, forKey: "data")
-                        performUIUpdatesOnMain {
-                            collectionView.reloadItemsAtIndexPaths([indexPath])
-                        }
                     }
                 }
                 // haven't loaded the picture yet
