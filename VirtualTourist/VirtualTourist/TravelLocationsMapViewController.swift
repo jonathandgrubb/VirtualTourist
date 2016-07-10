@@ -199,6 +199,9 @@ extension TravelLocationsMapViewController: MKMapViewDelegate {
                 }
             }
         
+            // make it so we can immediately select the pin again
+            mapView.deselectAnnotation(annotation, animated: false)
+            
         } else {
             print("error clicking annotation")
         }
