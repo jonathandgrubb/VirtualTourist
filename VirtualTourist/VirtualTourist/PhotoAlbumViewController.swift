@@ -73,6 +73,7 @@ class PhotoAlbumViewController: UIViewController {
         }
         
         // photosCollectionView
+        photosCollectionView.backgroundView?.alpha = 1.0
         photosCollectionView.allowsMultipleSelection = true
         if fetchedResultsController!.fetchedObjects?.count == 0 {
             print("no content for this location... get photos")
@@ -83,23 +84,27 @@ class PhotoAlbumViewController: UIViewController {
                 // disable the 'New Collection' button
                 newCollectionButton.enabled = false
                 
-                refreshPhotos(pin) { (success, errorMessage) in
-                    if success == false {
-                        performUIUpdatesOnMain {
+                refreshPhotos(pin) { (success, count, errorMessage) in
+                    performUIUpdatesOnMain {
+                        if success == false {
                             self.newCollectionButton.enabled = true
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
                         }
-                    }
-                    
-                    // reenable the 'New Collection' button
-                    performUIUpdatesOnMain {
+                        
+                        if count == 0 {
+                            // set the background of the photosCollectionView to transparent for "no results" label
+                            self.photosCollectionView.backgroundView?.alpha = 0.0
+                        } else {
+                            self.photosCollectionView.backgroundView?.alpha = 1.0
+                        }
+                        
+                        // reenable the 'New Collection' button
                         self.newCollectionButton.enabled = true
                     }
-                    
                 }
             }
         }
-        
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -118,16 +123,21 @@ class PhotoAlbumViewController: UIViewController {
                 
                 clearPhotos(pin)
                 
-                refreshPhotos(pin) { (success, errorMessage) in
-                    if success == false {
-                        performUIUpdatesOnMain {
+                refreshPhotos(pin) { (success, count, errorMessage) in
+                    performUIUpdatesOnMain {
+                        if success == false {
                             self.newCollectionButton.enabled = true
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
                         }
-                     }
-                    
-                    // reenable the 'New Collection' button
-                    performUIUpdatesOnMain {
+                        
+                        if count == 0 {
+                            // set the background of the photosCollectionView to transparent for "no results" label
+                            self.photosCollectionView.backgroundView?.alpha = 0.0
+                        } else {
+                            self.photosCollectionView.backgroundView?.alpha = 1.0
+                        }
+                        
+                        // reenable the 'New Collection' button
                         self.newCollectionButton.enabled = true
                     }
                 }
@@ -158,10 +168,10 @@ class PhotoAlbumViewController: UIViewController {
     }
 
     // request more Photos for this Pin from Flickr and store in CORE Data
-    func refreshPhotos(pin: Pin, completionHandler: (success: Bool, errorMessage: String?) -> Void) {
+    func refreshPhotos(pin: Pin, completionHandler: (success: Bool, count: Int, errorMessage: String?) -> Void) {
         
         guard let latitude = pin.latitude as? Double, longitude = pin.longitude as? Double else {
-            completionHandler(success: false, errorMessage: "Input error")
+            completionHandler(success: false, count: 0, errorMessage: "Input error")
             return
         }
         
@@ -169,7 +179,7 @@ class PhotoAlbumViewController: UIViewController {
         FlickrClient.sharedInstance().getLocationPhotos(latitude, longitude: longitude) { (success, error, results) in
             
             if success == false {
-                completionHandler(success: false, errorMessage: "Error getting photo urls")
+                completionHandler(success: false, count: 0, errorMessage: "Error getting photo urls")
                 return
             }
             
@@ -188,10 +198,10 @@ class PhotoAlbumViewController: UIViewController {
                 }
                 
                 print("new cell count provided by Flickr request for photos: \(urls.count)")
-                completionHandler(success: true, errorMessage: nil)
+                completionHandler(success: true, count: urls.count, errorMessage: nil)
             
             } else {
-                completionHandler(success: false, errorMessage: "Error getting photo urls")
+                completionHandler(success: false, count: 0, errorMessage: "Error getting photo urls")
             }
         }
     }
