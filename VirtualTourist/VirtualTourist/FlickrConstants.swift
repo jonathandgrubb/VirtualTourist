@@ -87,5 +87,6 @@ struct Constants {
         case DataConversionError
         case InputError
         case NotImplemented
+        case UnknownError
     }
 }
