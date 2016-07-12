@@ -89,6 +89,14 @@ class PhotoAlbumViewController: UIViewController {
                         if success == false {
                             self.newCollectionButton.enabled = true
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
+                        } else {
+                            // saving new photos to CORE Data to meet requirement of not having to download items
+                            // again (in case app is closed)
+                            do {
+                                try self.fetchedResultsController!.managedObjectContext.save()
+                            } catch {
+                                print("save didn't work")
+                            }
                         }
                         
                         if count == 0 {
@@ -128,6 +136,14 @@ class PhotoAlbumViewController: UIViewController {
                         if success == false {
                             self.newCollectionButton.enabled = true
                             ControllerCommon.displayErrorDialog(self, message: "Error getting photo urls")
+                        } else {
+                            // saving new photos to CORE Data to meet requirement of not having to download items
+                            // again (in case app is closed)
+                            do {
+                                try self.fetchedResultsController!.managedObjectContext.save()
+                            } catch {
+                                print("save didn't work")
+                            }
                         }
                         
                         if count == 0 {
@@ -191,8 +207,8 @@ class PhotoAlbumViewController: UIViewController {
                     photo.pin = self.selectedPin
                 }
                 
-                // needed because 'insert' event never fires for the frc
                 performUIUpdatesOnMain {
+                    // needed because 'insert' event never fires for the frc
                     self.executeSearch()
                     self.photosCollectionView.reloadData()
                 }
